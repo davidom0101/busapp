@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "CorkCobhConnect",
+    "slug": "CorkCobhConnect",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
