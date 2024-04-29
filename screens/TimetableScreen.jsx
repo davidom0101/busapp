@@ -12,11 +12,13 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { BackIcon } from "../components/Icons";
-import { Entypo } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import constants from "../constants/constants";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -27,26 +29,25 @@ const AccordionItem = ({ children, title, expanded, onHeaderPress }) => {
 
   return (
     <View style={styles.accordContainer}>
-      <TouchableOpacity style={styles.accordHeader} onPress={onHeaderPress}>
+      <TouchableOpacity
+        style={[
+          styles.accordHeader,
+          {
+            borderBottomLeftRadius: expanded ? 0 : 9,
+            borderBottomRightRadius: expanded ? 0 : 9,
+          },
+        ]}
+        onPress={onHeaderPress}
+      >
+        <View style={{ flex: 1 }}>
+          <Text style={styles.accordTitle}>{title}</Text>
+        </View>
+
         {expanded ? (
-          <Entypo
-            name="minus"
-            size={24}
-            color={expanded ? "#ed2a2b" : "#000000"}
-          />
+          <AntDesign name="caretup" size={16} color="white" />
         ) : (
-          <Entypo name="plus" size={24} color="black" />
+          <AntDesign name="caretdown" size={16} color="white" />
         )}
-        <Text
-          style={[
-            styles.accordTitle,
-            {
-              color: expanded ? "#ed2a2b" : "#000000",
-            },
-          ]}
-        >
-          {title}
-        </Text>
       </TouchableOpacity>
       {expanded && body}
     </View>
@@ -95,6 +96,8 @@ const TimetableScreen = ({ navigation }) => {
   const [loadLitf, setLoadLitf] = useState(false);
   const [loadCcli, setLoadCcli] = useState(false);
   const [loadCcr, setLoadCcr] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("Little Island");
 
   useEffect(() => {
     getAllDataFromCollection();
@@ -189,6 +192,55 @@ const TimetableScreen = ({ navigation }) => {
     }
   };
 
+  const handleOptionPress = (option) => {
+    setSelectedOption(option);
+  };
+
+  const generatePDF = async () => {
+    setLoading(true);
+    try {
+      const pdfData = [];
+
+      let selectedData = [];
+      if (selectedOption === "Little Island") {
+        selectedData = litf;
+      } else if (selectedOption === "Cobh - Cork Route 200") {
+        selectedData = ccr;
+      } else if (selectedOption === "Cobh - Carrigtwohill - Little Island") {
+        selectedData = ccli;
+      }
+      selectedData.forEach((station) => {
+        const stationData = {
+          stationName:
+            selectedOption === "Cobh - Cork Route 200"
+              ? station.stopName
+              : station.stop_name,
+          stops: [],
+        };
+        station.times.forEach((time) => {
+          stationData.stops.push({ stopName: time });
+        });
+        pdfData.push(stationData);
+      });
+
+      let htmlContent = "<h1>Timetable PDF</h1>";
+      pdfData.forEach((station) => {
+        htmlContent += `<h2>${station.stationName}</h2>`;
+        station.stops.forEach((stop) => {
+          htmlContent += `<p>${stop.stopName}</p>`;
+        });
+      });
+
+      const pdf = await Print.printToFileAsync({ html: htmlContent });
+      setLoading(false);
+
+      await Sharing.shareAsync(pdf.uri, { mimeType: "application/pdf" });
+    } catch (error) {
+      setLoading(false);
+      console.error("Error generating PDF:", error);
+    }
+  };
+
   function handleButtonPress(buttonLabel) {
     setActiveButton(buttonLabel);
     const filteredData = timetables.filter((item) => {
@@ -231,13 +283,24 @@ const TimetableScreen = ({ navigation }) => {
     setCcr(filteredData);
   }
 
-  function renderCorkConnectTimetable() {
+  function renderLittleIsland() {
     return (
-      <View style={styles.timeTableContainer}>
-        <Text style={styles.heading}>Cork Connect Timetables</Text>
-        <View style={styles.headingContainer}>
-          <Text style={styles.heading2}>Little Island To Hollyhill </Text>
-          <Text style={styles.heading2}>Mon - Fri </Text>
+      <View>
+        <View style={styles.topPart}>
+          <View
+            style={{
+              height: 56,
+              width: 4,
+              backgroundColor: "#ed2a2b",
+            }}
+          />
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Text style={styles.headings}>Route 200</Text>
+            <Text style={styles.headings}>Little Island To Hollyhill</Text>
+          </View>
+          <View style={styles.dayContainer}>
+            <Text style={styles.dateStyle}>Mon - Fri</Text>
+          </View>
         </View>
         <CustomButton
           label1="Little Island To Hollyhill"
@@ -250,7 +313,13 @@ const TimetableScreen = ({ navigation }) => {
           data={litf.map((stop, index) => ({
             title: stop.stop_name,
             content: (
-              <View key={index}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                }}
+                key={index}
+              >
                 {stop.times.map((time, i) => (
                   <Text
                     style={{
@@ -258,6 +327,7 @@ const TimetableScreen = ({ navigation }) => {
                       paddingTop: 5,
                       color: "black",
                       fontWeight: "400",
+                      marginRight: 10,
                     }}
                     key={i}
                   >
@@ -272,12 +342,24 @@ const TimetableScreen = ({ navigation }) => {
     );
   }
 
-  function renderCobhConnectTimetable() {
+  function renderCobhCorkRoute() {
     return (
-      <View style={[styles.timeTableContainer, { marginVertical: 20 }]}>
-        <Text style={styles.heading}>Cobh Connect Timetables</Text>
-        <View style={styles.headingContainer}>
-          <Text style={styles.heading2}>Cobh - Cork Route 200 </Text>
+      <View>
+        <View style={styles.topPart}>
+          <View
+            style={{
+              height: 56,
+              width: 4,
+              backgroundColor: "#ed2a2b",
+            }}
+          />
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Text style={styles.headings}>Route 210</Text>
+            <Text style={styles.headings}>Cobh - Cork Route 200</Text>
+          </View>
+          <View style={styles.dayContainer}>
+            <Text style={styles.dateStyle}>{activeDay}</Text>
+          </View>
         </View>
         <CustomButton
           label1="Cobh to Cork"
@@ -285,24 +367,15 @@ const TimetableScreen = ({ navigation }) => {
           activeButton={activeButton2}
           onPress={handleButtonPress2}
         />
-        <ScrollView
-          showsHorizontalScrollIndicator={false}
-          scrollEnabled={false}
-          horizontal
-          style={{
-            alignSelf: "center",
-            marginTop: 10,
-            marginBottom: 20,
-          }}
-        >
+
+        <View style={styles.constantsValue}>
           {constants.days.map((day, index) => (
             <TouchableOpacity
               key={index}
               style={[
                 styles.dayButton,
                 {
-                  backgroundColor: activeDay === day.name ? "#ed2a2b" : "white",
-                  borderWidth: activeDay === day.name ? 0 : 1,
+                  backgroundColor: activeDay === day.name ? "#000000" : "white",
                 },
               ]}
               onPress={() => handleDayPress(day.name)}
@@ -317,12 +390,15 @@ const TimetableScreen = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           ))}
-        </ScrollView>
+        </View>
         <Accordion
           data={ccr.map((stop, index) => ({
             title: stop.stopName,
             content: (
-              <View key={index}>
+              <View
+                style={{ flexDirection: "row", flexWrap: "wrap" }}
+                key={index}
+              >
                 {stop.times.map((time, i) => (
                   <Text style={styles.timeStyle} key={i}>
                     {time}
@@ -336,13 +412,23 @@ const TimetableScreen = ({ navigation }) => {
     );
   }
 
-  function renderCobhCarrigtwohillTimetable() {
+  function renderCobhCarrigtwohillLittleIsland() {
     return (
-      <View style={{ marginVertical: 20 }}>
-        <View>
-          <Text style={styles.heading2}>
-            Cobh - Carrigtwohill - Little Island
-          </Text>
+      <View>
+        <View style={styles.topPart}>
+          <View
+            style={{
+              height: 56,
+              width: 4,
+              backgroundColor: "#ed2a2b",
+            }}
+          />
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Text style={styles.headings}>Route 211</Text>
+            <Text style={styles.headings}>
+              Cobh - Carrigtwohill - Little Island
+            </Text>
+          </View>
         </View>
         <CustomButton
           label1="Cobh – Carrigtwohill – Little Island"
@@ -358,7 +444,10 @@ const TimetableScreen = ({ navigation }) => {
           data={ccli.map((stop, index) => ({
             title: stop.stop_name,
             content: (
-              <View key={index}>
+              <View
+                style={{ flexDirection: "row", flexWrap: "wrap" }}
+                key={index}
+              >
                 {stop.times.map((time, i) => (
                   <Text
                     style={{
@@ -366,6 +455,7 @@ const TimetableScreen = ({ navigation }) => {
                       paddingTop: 5,
                       color: "black",
                       fontWeight: "400",
+                      marginRight: 10,
                     }}
                     key={i}
                   >
@@ -407,15 +497,85 @@ const TimetableScreen = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.titleText}>Timetables</Text>
       </View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentInsetAdjustmentBehavior="automatic"
-        style={styles.content}
-      >
-        {renderCorkConnectTimetable()}
-        {renderCobhConnectTimetable()}
-        {renderCobhCarrigtwohillTimetable()}
-      </ScrollView>
+      <View style={styles.contentBox}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.insideContentBox}
+        >
+          {selectedOption === "Little Island" && renderLittleIsland()}
+          {selectedOption === "Cobh - Cork Route 200" && renderCobhCorkRoute()}
+          {selectedOption === "Cobh - Carrigtwohill - Little Island" &&
+            renderCobhCarrigtwohillLittleIsland()}
+        </ScrollView>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={generatePDF}
+          style={styles.pdfButton}
+        >
+          {loading ? (
+            <ActivityIndicator size={"small"} />
+          ) : (
+            <Text style={styles.textStyles}>Download Time table PDF</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+      <View style={styles.optionBar}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={[
+            styles.buttonStyle,
+            selectedOption === "Little Island" && styles.selectedButton,
+          ]}
+          onPress={() => handleOptionPress("Little Island")}
+        >
+          <Text
+            style={[
+              styles.buttonText,
+              selectedOption === "Little Island" && styles.selectedText,
+            ]}
+          >
+            Little Island To Hollyhill
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={[
+            styles.buttonStyle,
+            selectedOption === "Cobh - Cork Route 200" && styles.selectedButton,
+          ]}
+          onPress={() => handleOptionPress("Cobh - Cork Route 200")}
+        >
+          <Text
+            style={[
+              styles.buttonText,
+              selectedOption === "Cobh - Cork Route 200" && styles.selectedText,
+            ]}
+          >
+            Cobh - Cork Route 200
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={[
+            styles.buttonStyle,
+            selectedOption === "Cobh - Carrigtwohill - Little Island" &&
+              styles.selectedButton,
+          ]}
+          onPress={() =>
+            handleOptionPress("Cobh - Carrigtwohill - Little Island")
+          }
+        >
+          <Text
+            style={[
+              styles.buttonText,
+              selectedOption === "Cobh - Carrigtwohill - Little Island" &&
+                styles.selectedText,
+            ]}
+          >
+            Cobh - Carrigtwohill - Little Island
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -423,7 +583,113 @@ const TimetableScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#ed2a2b",
+  },
+  iconStyle: {
+    width: 12,
+    height: 12,
+  },
+  constantsValue: {
+    height: 49,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "grey",
+    marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  stopNameText: {
+    fontWeight: "500",
+    fontSize: 16,
+    color: "#ffffff",
+  },
+  dateStyle: {
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#ffffff",
+  },
+  pdfButton: {
+    width: 315,
+    height: 54,
+    backgroundColor: "#000000",
+    borderRadius: 9,
+    alignSelf: "center",
+    marginBottom: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textStyles: {
+    fontWeight: "500",
+    fontSize: 16,
+    color: "#ffffff",
+  },
+
+  stopNameContainer: {
+    width: 315,
+    height: 46,
+    backgroundColor: "#ed2a2b",
+    borderRadius: 9,
+    marginTop: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    alignSelf: "center",
+  },
+  dayContainer: {
+    width: 95,
+    height: 23,
+    backgroundColor: "#ed2a2b",
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+    alignSelf: "flex-start",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  contentBox: {
+    marginTop: 50,
+    backgroundColor: "#f6f6f6",
+    flex: 1,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+  },
+  headings: {
+    fontSize: 16,
+    color: "#000000",
+  },
+  insideContentBox: {
+    // width: 341,
+    marginHorizontal: 24,
+    alignSelf: "center",
     backgroundColor: "#ffffff",
+    marginTop: 55,
+    borderRadius: 9,
+    marginBottom: 10,
+  },
+  topPart: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  optionBar: {
+    width: 341,
+    height: 59,
+    alignSelf: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "absolute",
+    top: "14%",
+    borderRadius: 9,
+    backgroundColor: "#ffffff",
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    paddingHorizontal: 7,
   },
   header: {
     backgroundColor: "#ed2a2b",
@@ -436,8 +702,9 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontFamily: "ABeeZeeRegular",
-    fontSize: 22,
+    fontSize: 23,
     color: "#ffffff",
+    fontWeight: "bold",
   },
   backBtn: {
     position: "absolute",
@@ -474,25 +741,28 @@ const styles = StyleSheet.create({
   },
   accordHeader: {
     padding: 12,
-    backgroundColor: "#fff",
+    backgroundColor: "#ed2a2b",
     color: "#eee",
     flex: 1,
     flexDirection: "row",
-    borderWidth: 1,
     alignItems: "center",
+    borderRadius: 9,
+    marginTop: 12,
+    marginHorizontal: 12,
   },
   accordTitle: {
     fontSize: 16,
     paddingLeft: 10,
     fontWeight: "bold",
-    color: "#000000",
+    color: "#ffffff",
     paddingRight: 15,
   },
   accordBody: {
     padding: 12,
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
+    backgroundColor: "#fdeaea",
+    borderBottomLeftRadius: 9,
+    borderBottomRightRadius: 9,
+    marginHorizontal: 12,
   },
   textSmall: {
     fontSize: 16,
@@ -504,14 +774,37 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 5,
     margin: 5,
-    borderRadius: 8,
-    borderWidth: 1,
+    borderRadius: 9,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 100,
   },
   timeStyle: {
     fontSize: 16,
     paddingTop: 5,
     color: "black",
     fontWeight: "400",
+    marginRight: 10,
+  },
+  buttonStyle: {
+    width: 106,
+    height: 44,
+    borderRadius: 7,
+    backgroundColor: "#ffffff",
+    justifyContent: "center",
+    paddingHorizontal: 6,
+  },
+  buttonText: {
+    color: "black",
+    fontSize: 11.26,
+    textAlign: "center",
+  },
+  selectedButton: {
+    backgroundColor: "#000000",
+  },
+  selectedText: {
+    color: "#ffffff",
   },
 });
 

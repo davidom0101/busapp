@@ -46,10 +46,6 @@ const CustomButton = ({
         style={[
           styles.button,
           {
-            borderTopRightRadius: 24,
-            borderBottomRightRadius: 24,
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0,
             borderLeftWidth: 0,
           },
           activeButton === label2 && styles.activeButton,
@@ -79,21 +75,21 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   button: {
-    height: 45,
+    height: 49,
     width: "50%",
     backgroundColor: "#fff",
-    borderTopLeftRadius: 24,
-    borderBottomLeftRadius: 24,
     justifyContent: "center",
     alignItems: "center",
   },
 
   activeButton: {
-    backgroundColor: "#ed2a2b",
+    backgroundColor: "#000000",
   },
   inactiveButton: {
     backgroundColor: "white",
-    borderWidth: 1,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: "grey",
   },
   label: {
     fontSize: 14,
