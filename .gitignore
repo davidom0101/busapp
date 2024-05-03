@@ -4,4 +4,4 @@ node_modules
 credentials/
 firebase/
 firebase
-credentials
+credentialscredentials.json
