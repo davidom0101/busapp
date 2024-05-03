@@ -204,7 +204,7 @@ const TimetableScreen = ({ navigation }) => {
       let selectedData = [];
       if (selectedOption === "Little Island") {
         selectedData = litf;
-      } else if (selectedOption === "Cobh - Cork Route 200") {
+      } else if (selectedOption === "Cobh - Cork") {
         selectedData = ccr;
       } else if (selectedOption === "Cobh - Carrigtwohill - Little Island") {
         selectedData = ccli;
@@ -212,7 +212,7 @@ const TimetableScreen = ({ navigation }) => {
       selectedData.forEach((station) => {
         const stationData = {
           stationName:
-            selectedOption === "Cobh - Cork Route 200"
+            selectedOption === "Cobh - Cork 200"
               ? station.stopName
               : station.stop_name,
           stops: [],
@@ -355,7 +355,7 @@ const TimetableScreen = ({ navigation }) => {
           />
           <View style={{ flex: 1, marginLeft: 10 }}>
             <Text style={styles.headings}>Route 210</Text>
-            <Text style={styles.headings}>Cobh - Cork Route 200</Text>
+            <Text style={styles.headings}>Cobh - Cork</Text>
           </View>
           <View style={styles.dayContainer}>
             <Text style={styles.dateStyle}>{activeDay}</Text>
@@ -515,7 +515,7 @@ const TimetableScreen = ({ navigation }) => {
           {loading ? (
             <ActivityIndicator size={"small"} />
           ) : (
-            <Text style={styles.textStyles}>Download Time table PDF</Text>
+            <Text style={styles.textStyles}>Download Timetable PDF</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -534,7 +534,7 @@ const TimetableScreen = ({ navigation }) => {
               selectedOption === "Little Island" && styles.selectedText,
             ]}
           >
-            Little Island To Hollyhill
+            200 Little Island - Hollyhill
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -551,7 +551,7 @@ const TimetableScreen = ({ navigation }) => {
               selectedOption === "Cobh - Cork Route 200" && styles.selectedText,
             ]}
           >
-            Cobh - Cork Route 200
+            210 Cobh - Cork
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -572,7 +572,7 @@ const TimetableScreen = ({ navigation }) => {
                 styles.selectedText,
             ]}
           >
-            Cobh - Carrigtwohill - Little Island
+            211 Cobh - Carrigtwohill - Little Island
           </Text>
         </TouchableOpacity>
       </View>

@@ -18,21 +18,30 @@ const AboutUsScreen = ({ navigation }) => {
                     style={styles.image}
                     resizeMode="cover" // or "contain", depending on your needs
             />
+<Text style={styles.title}>Our Service</Text>
 <Text style={styles.paragraph}>
-    Cork and Cobh Connect represent a leading, Irish-owned coach service, offering a seamless and comfortable journey linking Little Island, Cobh, and Hollyhill directly with Cork City Centre. Our mission is to provide a low-cost, high-value commuting solution for the residents of Little Island, Cobh, Great Island, and the surrounding areas, enhancing the connectivity and accessibility of Cork City.
+    Cobh Connect is a fast, comfortable coach service linking Cobh and Cork City. We are an Irish owned 
+    company offering a low cost, high value service for the residents of Cobh and Great Island. We offer 
+    up to 40 departures seven days a week and have multiple designated pick up and drop off points 
+    strategically located around the town on its journey to Cork City. Beginning at 06.15 in the morning, 
+    this fast and frequent service will journey to Cork finishing at Patrick’s Quay and the service 
+    continues into the evening with a Nitelink Service every Friday, Saturday, and Bank Holiday Sundays.
+</Text>
+<Text style={styles.title}>Our Fleet</Text>
+<Text style={styles.paragraph}>
+    Cobh Connect operates a fleet of fully seated, air-conditioned executive coaches, all of which are 4G 
+    Wi-Fi enabled with charging points on board as standard. The fleet of modern, high-capacity buses 
+    aims to make the daily commute for secondary school students and students of colleges such as 
+    UCC, CIT, and the College of Commerce, more flexible, reliable and affordable. Cobh Connect operates 
+    a mixed fleet of fully automatic transmission and air ride suspension fitted coaches. Coaches are 
+    fitted with recliner seating, climate control, on-board 4G Wi-Fi, and safety belts are fitted to every 
+    seat. Overhead soft lighting, reading lamps, directional air conditioning nozzles, baggage shelves 
+    and skylights are standard throughout the Cobh Connect fleet.
 </Text>
 <Text style={styles.paragraph}>
-    With up to 72 departures across seven days a week, our services are designed to cater to the diverse needs of our passengers. Our strategically located pick-up and drop-off points in Little Island, Cobh, and along the route ensure convenience and efficiency for your daily commute. Our services commence bright and early at quarter past six in the morning, ensuring that you reach your destination on time, whether it's for school, college, work, or leisure. For those late-night journeys, our Nitelink Service operates every Friday, Saturday, and Bank Holiday Sunday, providing a safe and reliable option for your nighttime travel needs.
+    Cobh Connect – Your Connection to Cork! If you have any questions or queries, please do contact us. We would love to hear from you.
 </Text>
-<Text style={styles.paragraph}>
-    Our fleet consists of modern, fully seated, air-conditioned executive coaches, all equipped with 4G Wi-Fi and onboard charging points, setting a new standard in commuter comfort. The high-capacity buses are designed to support the daily routines of secondary school students and college students from UCC, CIT, and the College of Commerce, making education more accessible and travel stress-free.
-</Text>
-<Text style={styles.paragraph}>
-    Safety, comfort, and reliability are at the core of our services. Our coaches feature fully automatic transmission, air ride suspension, recliner seating, climate control, and safety belts for every seat. Additional amenities such as overhead soft lighting, reading lamps, directional air conditioning nozzles, baggage shelves, and skylights ensure a pleasant and enjoyable journey for all our passengers.
-</Text>
-<Text style={styles.paragraph}>
-    Cork and Cobh Connect – Your Premier Connection to Cork, offering a blend of efficiency, comfort, and value, all while keeping you connected to what matters most.
-</Text>
+
 
         </ScrollView>
         </View>
@@ -53,6 +62,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingTop: Constants.statusBarHeight,
     },
+    title: {
+        fontFamily: 'ABeeZeeRegular',  // Maintains consistency with your titleText font
+        fontSize: 20,                 // Slightly smaller than the header title, but prominent
+        color: '#333333',             // A dark color for high readability, less stark than black
+        marginTop: 20,                // Adds space above the title for clear section separation
+        marginBottom: 10,             // Space below the title before the paragraph text starts
+        paddingLeft: 20,              // Aligns text with the paragraph padding
+        paddingRight: 20,             // Maintains right padding consistency
+        fontWeight: 'bold',           // Makes the title stand out more
+    },    
     titleText: {
         fontFamily: 'ABeeZeeRegular',
         fontSize: 22,

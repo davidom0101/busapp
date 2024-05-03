@@ -36,6 +36,14 @@ const HomeDrawerContent = ({ navigation }) => {
                     <Text style={styles.navBtnText}>About Us</Text>
                 </TouchableOpacity>
 
+                <TouchableOpacity style={styles.navBtn} onPress={() => { navigation.push('Detail', { title: 'Fares', url: 'https://corkconnect.ie/app-fares/' }) }}>
+                    <Text style={styles.navBtnText}>Fares</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.navBtn} onPress={() => { navigation.push('Detail', { title: 'News', url: 'https://corkconnect.ie/app-news' }) }}>
+                    <Text style={styles.navBtnText}>News</Text>
+                </TouchableOpacity>
+
                 <TouchableOpacity style={{ height: 42, justifyContent: 'center' }} onPress={() => { navigation.push('Detail', { title: 'Terms and Privacy Policy', url: 'https://corkconnect.ie/app-terms-and-conditons/' }) }}>
                     <Text style={styles.navBtnText}>Terms and Privacy Policy</Text>
                 </TouchableOpacity>

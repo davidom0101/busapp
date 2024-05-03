@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import Constants from 'expo-constants';
-import { MenuIcon, TicketsIcon, TrackIcon, ProfileIcon, FAQIcon, MyTicketsIcon, TimetablesIcon, BusIcon, ContactIcon } from '../components/Icons';
+import { MenuIcon, TicketsIcon, TrackIcon, ProfileIcon, FAQIcon, MyTicketsIcon, TimetablesIcon, BusIcon, ContactIcon  } from '../components/Icons';
 import ContinuouslyScrollingText from '../components/ContinuouslyScrollingText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -61,10 +61,20 @@ const HomeScreen = ({ navigation }) => {
                     <Text style={styles.navItemText}>Timetables</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity style={styles.navItem} onPress={() => { navigation.push('Detail', { title: 'Fares', url: 'https://corkconnect.ie/app-fares' }) }}>
+                        <TicketsIcon />
+                        <Text style={styles.navItemText}>Fares</Text>
+                    </TouchableOpacity>   
+
                     <TouchableOpacity style={styles.navItem} onPress={() => { navigation.push('Detail', { title: 'Track My Bus', url: 'https://leap.futurefleet.com/track-journey/?provider=Q0JPQkNM&lang=en' }) }}>
                         <TrackIcon />
                         <Text style={styles.navItemText}>Track My Bus</Text>
                     </TouchableOpacity>    
+
+                    <TouchableOpacity style={styles.navItem} onPress={() => { navigation.push('Detail', { title: 'News', url: 'https://corkconnect.ie/app-news/' }) }}>
+                        <FAQIcon />
+                        <Text style={styles.navItemText}>News</Text>
+                    </TouchableOpacity>   
 
                     <TouchableOpacity style={styles.navItem} onPress={() => { navigation.push('Detail', { title: 'Coach Hire', url: 'https://corkconnect.ie/app-coach-hire-form/' }) }}>
                         <BusIcon />
@@ -75,28 +85,6 @@ const HomeScreen = ({ navigation }) => {
                         <ContactIcon />
                         <Text style={styles.navItemText}>Contact Us</Text>
                     </TouchableOpacity>
-
-
-                    <TouchableOpacity
-                    style={styles.navItem}
-                    onPress={() => {
-                    navigation.push("FAQs");
-                    }}
-                    >
-                    <FAQIcon />
-                    <Text style={styles.navItemText}>FAQs</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                    style={styles.navItem}
-                    onPress={() => {
-                    navigation.push("AboutUs");
-                    }}
-                    >
-                    <ProfileIcon />
-                    <Text style={styles.navItemText}>About Us</Text>
-                    </TouchableOpacity>
-
                 </View>
             </View>
             <Image
