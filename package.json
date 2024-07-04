@@ -16,9 +16,13 @@
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/stack": "^6.3.16",
     "expo": "^50.0.0",
+    "expo-clipboard": "~5.0.1",
+    "expo-constants": "~15.4.6",
     "expo-dev-client": "~3.3.7",
+    "expo-device": "~5.9.4",
     "expo-file-system": "^16.0.9",
     "expo-font": "~11.10.2",
+    "expo-notifications": "~0.27.8",
     "expo-print": "~12.8.1",
     "expo-sharing": "^11.10.0",
     "expo-status-bar": "~1.11.1",
@@ -43,5 +47,6 @@
     "@types/react-native": "^0.71.5",
     "typescript": "^5.3.0"
   },
-  "private": true
+  "private": true,
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }

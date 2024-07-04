@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "163841309727",
+    "project_id": "corkconnectapp",
+    "storage_bucket": "corkconnectapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163841309727:android:a451845101f49f23bb292a",
+        "android_client_info": {
+          "package_name": "com.barryscoaches.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhSzqY8niyJ8uPSnBAaqZ8V61UZKDv4rY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
