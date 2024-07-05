@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Platform, View } from "react-native";
+import { Alert, Platform, View } from "react-native";
 import { useFonts } from "expo-font";
-import { MainNavigator } from "./navigation/mainNavigator"; 
+import { MainNavigator } from "./navigation/mainNavigator";
 
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import Constants from "expo-constants"; 
+import Constants from "expo-constants";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -19,7 +19,7 @@ export default function App() {
   const [loaded] = useFonts({
     ABeeZeeRegular: require("./assets/fonts/ABeeZee-Regular.ttf"),
   });
-  const [expoPushToken, setExpoPushToken] = useState(""); 
+  const [expoPushToken, setExpoPushToken] = useState("");
   const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
     []
   );
@@ -43,6 +43,11 @@ export default function App() {
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         setNotification(notification);
+        console.log("notification :", notification);
+        Alert.alert(
+          notification.request.content.title as string,
+          notification.request.content.body as string
+        );
       });
 
     responseListener.current =
