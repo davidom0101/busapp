@@ -24,6 +24,7 @@ if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
+
 const AccordionItem = ({ children, title, expanded, onHeaderPress }) => {
   const body = <View style={styles.accordBody}>{children}</View>;
 

@@ -31,8 +31,30 @@ export default function App() {
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
-      token && setExpoPushToken(token);
-      alert(token);
+      if (token) {
+        setExpoPushToken(token);
+        alert(token);
+
+        fetch(
+          `https://corkconnect.ie?Iceps_key=66882392342f5&add_token=${encodeURIComponent(
+            token
+          )}`
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Server error: ${response.status} ${response.statusText}`
+              );
+            }
+            return response.text(); // Use text() for a simpler response parsing
+          })
+          .then((data) => {
+            console.log("Token sent to backend successfully:", data);
+          })
+          .catch((error) => {
+            console.error("Error sending token to backend:", error);
+          });
+      }
     });
 
     if (Platform.OS === "android") {
