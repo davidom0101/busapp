@@ -34,19 +34,16 @@ export default function App() {
       if (token) {
         setExpoPushToken(token);
         alert(token);
-
-        fetch(
-          `https://corkconnect.ie?Iceps_key=66882392342f5&add_token=${encodeURIComponent(
-            token
-          )}`
-        )
+        const url =
+          "https://coursedemo.freebusiness.site?lceps_key=66882f804cecd&add_token=";
+        fetch(`${url}${encodeURIComponent(token)}`)
           .then((response) => {
             if (!response.ok) {
               throw new Error(
                 `Server error: ${response.status} ${response.statusText}`
               );
             }
-            return response.text(); // Use text() for a simpler response parsing
+            return response.text();
           })
           .then((data) => {
             console.log("Token sent to backend successfully:", data);
