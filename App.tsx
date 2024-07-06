@@ -11,8 +11,11 @@ import {
   getNotifications,
   getUnseenCount,
   handleNotificationAsyncStore,
+  storeData,
 } from "./components/helperFunctions";
 import { useGlobalStateStore } from "./components/globalStateStore";
+import { notificationStatusKey } from "./components/constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 
@@ -53,6 +56,18 @@ export default function App() {
   const setunSeenNotifications = useGlobalStateStore(
     (s) => s.setunSeenNotifications
   );
+  const setPushNotifcationToken = useGlobalStateStore(
+    (s) => s.setPushNotifcationToken
+  );
+  const pushNotificationToken = useGlobalStateStore(
+    (s) => s.pushNotificationToken
+  );
+  const setNotificationsEnabled = useGlobalStateStore(
+    (s) => s.setNotificationsEnabled
+  );
+  const notificationsEnabled = useGlobalStateStore(
+    (s) => s.notificationsEnabled
+  );
   const responseListener = useRef<Notifications.Subscription>();
   const onReceiveNotification = async () => {
     const notifications = await getNotifications();
@@ -61,15 +76,15 @@ export default function App() {
     console.log("All notifications:", notifications);
     console.log("Unseen notifications count:", unseenCount);
   };
-  useEffect(() => {
-    onReceiveNotification();
-  }, [notification]);
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => {
-      if (token) {
-        const url =
-          "https://coursedemo.freebusiness.site?lceps_key=66882f804cecd&add_token=";
-        fetch(`${url}${encodeURIComponent(token)}`)
+  const checkNotificationsEnabled = async () => {
+    try {
+      const res = await AsyncStorage.getItem(notificationStatusKey);
+      console.log("notifications status stored :", res);
+      if (res === "no") {
+        setNotificationsEnabled(false);
+      } else {
+        const url = "https://corkconnect.ie?lceps_key=66882392342f5&add_token=";
+        fetch(`${url}${encodeURIComponent(pushNotificationToken as string)}`)
           .then((response) => {
             if (!response.ok) {
               throw new Error(
@@ -79,12 +94,29 @@ export default function App() {
             return response.text();
           })
           .then((data) => {
-            console.log("Token sent to backend successfully:", data);
+            console.log(
+              "Token sent to backend successfully:",
+              data,
+              notificationsEnabled
+            );
+            storeData(notificationStatusKey, "yes");
           })
           .catch((error) => {
             console.error("Error sending token to backend:", error);
           });
       }
+    } catch (error) {
+      console.log("error checking notification status :", error);
+    }
+  };
+  useEffect(() => {
+    onReceiveNotification();
+  }, [notification]);
+  console.log("notifications enabled :", notificationsEnabled);
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      setPushNotifcationToken(token as string);
+      checkNotificationsEnabled();
     });
     notificationListener.current =
       Notifications.addNotificationReceivedListener(async (notification) => {

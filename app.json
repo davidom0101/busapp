@@ -11,7 +11,9 @@
       "resizeMode": "cover",
       "backgroundColor": "#ed2a2b"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "buildNumber": "1.0.0",
@@ -34,6 +36,9 @@
         "projectId": "27a7b130-a0ae-4a45-a4cf-5ab6d7c90751"
       }
     },
-    "owner": "davidomalley"
+    "owner": "davidomalley",
+    "plugins": [
+      "expo-font"
+    ]
   }
 }

@@ -11,6 +11,14 @@ import {
 import Constants from "expo-constants";
 import { BackIcon } from "../components/Icons"; // Ensure the import path is correct.
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
+import { useGlobalStateStore } from "../components/globalStateStore";
+import {
+  disbalePushNotifcationsUrl,
+  enablePushNotificationsUrl,
+  notificationStatusKey,
+} from "../components/constants";
+import { storeData } from "../components/helperFunctions";
 
 if (
   Platform.OS === "android" &&
@@ -21,7 +29,15 @@ if (
 
 const NotificationsScreen = ({ navigation }) => {
   const [notifications, setNotifications] = useState([]);
-
+  const pushNotificationToken = useGlobalStateStore(
+    (s) => s.pushNotificationToken
+  );
+  const notificationsEnabled = useGlobalStateStore(
+    (s) => s.notificationsEnabled
+  );
+  const setNotificationsEnabled = useGlobalStateStore(
+    (s) => s.setNotificationsEnabled
+  );
   useEffect(() => {
     fetchNotifications();
   }, []);
@@ -37,6 +53,44 @@ const NotificationsScreen = ({ navigation }) => {
       console.error("Error fetching notifications:", error);
     }
   };
+  const handleToggleNotifications = async (status) => {
+    try {
+      if (pushNotificationToken) {
+        let url;
+        if (status) {
+          url = enablePushNotificationsUrl;
+        } else {
+          url = disbalePushNotifcationsUrl;
+        }
+        fetch(`${url}${encodeURIComponent(pushNotificationToken)}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Server error: ${response.status} ${response.statusText}`
+              );
+            }
+            return response.text();
+          })
+          .then((data) => {
+            console.log("Token sent to backend successfully:", data);
+            if (status) {
+              storeData(notificationStatusKey, "yes");
+              alert("Push Notifications enabled");
+              setNotificationsEnabled(true);
+            } else {
+              storeData(notificationStatusKey, "no");
+              alert("Push Notifications disabled");
+              setNotificationsEnabled(false);
+            }
+          })
+          .catch((error) => {
+            console.error("Error sending token to backend:", error);
+          });
+      }
+    } catch (error) {
+      console.log("error updating notifications togggle:", error);
+    }
+  };
 
   const renderItem = ({ item }) => {
     return (
@@ -49,9 +103,7 @@ const NotificationsScreen = ({ navigation }) => {
         <Text style={[styles.notificationText, { fontWeight: "bold" }]}>
           {item?.title}
         </Text>
-        <Text style={styles.notificationText}>
-          {item?.body}
-        </Text>
+        <Text style={styles.notificationText}>{item?.body}</Text>
       </View>
     );
   };
@@ -70,6 +122,26 @@ const NotificationsScreen = ({ navigation }) => {
         <Text style={styles.titleText}>Notifications</Text>
       </View>
       <FlatList data={notifications} renderItem={renderItem} />
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          margin: 10,
+          padding: 10,
+          borderWidth: 1,
+          borderRadius: 30,
+          paddingHorizontal: 20,
+          alignItems:'center'
+        }}
+        onPress={() => handleToggleNotifications(!notificationsEnabled)}
+      >
+        <Text style={{fontFamily:"ABeeZeeRegular"}}>Notifications</Text>
+        <Ionicons
+          name={notificationsEnabled ? "notifications" : "notifications-off"}
+          size={24}
+          color="red"
+        />
+      </TouchableOpacity>
     </View>
   );
 };
