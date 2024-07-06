@@ -1,11 +1,38 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Platform, View } from "react-native";
+import { Platform, View } from "react-native";
 import { useFonts } from "expo-font";
 import { MainNavigator } from "./navigation/mainNavigator";
 
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import * as TaskManager from "expo-task-manager";
+import {
+  getNotifications,
+  getUnseenCount,
+  handleNotificationAsyncStore,
+} from "./components/helperFunctions";
+import { useGlobalStateStore } from "./components/globalStateStore";
+
+const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
+
+TaskManager.defineTask(
+  BACKGROUND_NOTIFICATION_TASK,
+  async ({ data, error, executionInfo }) => {
+    console.log(
+      "Received a notification in the background!",
+      data,
+      executionInfo
+    );
+    await handleNotificationAsyncStore({
+      title: data.notification.data.title,
+      body: data.notification.data.message,
+      status: "unseen",
+    });
+  }
+);
+
+Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -19,21 +46,27 @@ export default function App() {
   const [loaded] = useFonts({
     ABeeZeeRegular: require("./assets/fonts/ABeeZee-Regular.ttf"),
   });
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
-    []
-  );
   const [notification, setNotification] = useState<
     Notifications.Notification | undefined
   >(undefined);
   const notificationListener = useRef<Notifications.Subscription>();
+  const setunSeenNotifications = useGlobalStateStore(
+    (s) => s.setunSeenNotifications
+  );
   const responseListener = useRef<Notifications.Subscription>();
-
+  const onReceiveNotification = async () => {
+    const notifications = await getNotifications();
+    const unseenCount = await getUnseenCount();
+    setunSeenNotifications(unseenCount);
+    console.log("All notifications:", notifications);
+    console.log("Unseen notifications count:", unseenCount);
+  };
+  useEffect(() => {
+    onReceiveNotification();
+  }, [notification]);
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       if (token) {
-        setExpoPushToken(token);
-        alert(token);
         const url =
           "https://coursedemo.freebusiness.site?lceps_key=66882f804cecd&add_token=";
         fetch(`${url}${encodeURIComponent(token)}`)
@@ -53,27 +86,25 @@ export default function App() {
           });
       }
     });
-
-    if (Platform.OS === "android") {
-      Notifications.getNotificationChannelsAsync().then((value) =>
-        setChannels(value ?? [])
-      );
-    }
     notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
+      Notifications.addNotificationReceivedListener(async (notification) => {
         setNotification(notification);
-        console.log("notification :", notification);
-        Alert.alert(
-          notification.request.content.title as string,
-          notification.request.content.body as string
-        );
+        // console.log("notification :", notification);
+        await handleNotificationAsyncStore({
+          title: notification.request.content.title,
+          body: notification.request.content.body,
+          status: "unseen",
+        });
+        // Alert.alert(
+        //   notification.request.content.title as string,
+        //   notification.request.content.body as string
+        // );
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
+        console.log("response recieve lisnet", response);
       });
-
     return () => {
       notificationListener.current &&
         Notifications.removeNotificationSubscription(
