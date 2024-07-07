@@ -5,10 +5,17 @@ export const handleNotificationAsyncStore = async (notification) => {
     const notifications = notificationsJSON
       ? JSON.parse(notificationsJSON)
       : [];
-    console.log("notifications length :", notifications.length);
-    notifications.push(notification);
-    console.log("notifications length :", notifications.length);
-    await AsyncStorage.setItem("notifications", JSON.stringify(notifications));
+ 
+    const isDuplicate = notifications.some((n) => n.id === notification.id);
+
+    if (!isDuplicate) {
+      notifications.push(notification);
+      await AsyncStorage.setItem(
+        "notifications",
+        JSON.stringify([])
+      );
+    }
+
     const unseenCount = notifications.filter(
       (n) => n.status === "unseen"
     ).length;

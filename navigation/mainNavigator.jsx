@@ -14,6 +14,7 @@ import TrackMyBusScreen from "../screens/TrackMyBusScreen";
 import NotificationsScreen from "../screens/Notifications";
 import * as Notifications from "expo-notifications";
 import { Linking } from "react-native";
+import { handleNotificationAsyncStore } from "../components/helperFunctions";
 
 const Drawer = createDrawerNavigator();
 

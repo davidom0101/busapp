@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import { useFonts } from "expo-font";
 import { MainNavigator } from "./navigation/mainNavigator";
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import * as TaskManager from "expo-task-manager";
-import { 
+import {
   getUnseenCount,
   handleNotificationAsyncStore,
   storeData,
@@ -26,11 +28,14 @@ TaskManager.defineTask(
       data,
       executionInfo
     );
-    await handleNotificationAsyncStore({
-      title: data?.notification?.data.title,
-      body: data?.notification?.data.message,
-      status: "unseen",
-    });
+    if (data?.notification?.data.title) {
+      await handleNotificationAsyncStore({
+        title: data?.notification?.data.title,
+        body: data?.notification?.data.message,
+        status: "unseen",
+        id:uuidv4()
+      });
+    }
   }
 );
 
@@ -60,7 +65,7 @@ export default function App() {
   );
   const pushNotificationToken = useGlobalStateStore(
     (s) => s.pushNotificationToken
-  ); 
+  );
   const responseListener = useRef<Notifications.Subscription>();
   const onReceiveNotification = async () => {
     const unseenCount = await getUnseenCount();
@@ -88,7 +93,11 @@ export default function App() {
           storeData(notificationStatusKey, "yes");
         })
         .catch((error) => {
-          console.error("Error sending token to backend:", error);
+          console.error(
+            "Error sending token to backend:",
+            error,
+            pushNotificationToken
+          );
         });
     } catch (error) {
       console.log("error checking notification status :", error);
@@ -96,7 +105,7 @@ export default function App() {
   };
   useEffect(() => {
     onReceiveNotification();
-  }, [notification]); 
+  }, [notification]);
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       setPushNotifcationToken(token as string);
@@ -104,21 +113,25 @@ export default function App() {
     });
     notificationListener.current =
       Notifications.addNotificationReceivedListener(async (notification) => {
-        setNotification(notification); 
+        setNotification(notification);
+        console.log(notification);
+        onReceiveNotification();
         await handleNotificationAsyncStore({
           title: notification.request.content.title,
           body: notification.request.content.body,
           status: "unseen",
+          id:uuidv4()
         });
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener(
-        async (response) => { 
+        async (response) => {
           await handleNotificationAsyncStore({
             title: response.notification.request.content.title,
             body: response.notification.request.content.body,
             status: "unseen",
+            id:uuidv4()
           });
           onReceiveNotification();
         }
@@ -142,6 +155,7 @@ export default function App() {
     </View>
   );
 }
+
 async function registerForPushNotificationsAsync() {
   let token;
 

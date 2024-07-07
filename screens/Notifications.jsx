@@ -32,13 +32,22 @@ const NotificationsScreen = ({ navigation }) => {
   const pushNotificationToken = useGlobalStateStore(
     (s) => s.pushNotificationToken
   );
-  const notificationsEnabled = useGlobalStateStore(
-    (s) => s.notificationsEnabled
-  );
-  const setNotificationsEnabled = useGlobalStateStore(
-    (s) => s.setNotificationsEnabled
-  );
+  const [notificationsStatus, setNotificationsStatus] = useState(null);
+  const checkNotificationsStatus = async () => {
+    try {
+      const res = await AsyncStorage.getItem(notificationStatusKey);
+      if (res === "no") {
+        setNotificationsStatus(false);
+      } else {
+        setNotificationsStatus(true);
+      }
+      console.log("notifications status stored :", res==='no',notificationsStatus);
+    } catch (e) {
+      console.log("error ", e);
+    }
+  };
   useEffect(() => {
+    checkNotificationsStatus();
     fetchNotifications();
   }, []);
 
@@ -76,11 +85,11 @@ const NotificationsScreen = ({ navigation }) => {
             if (status) {
               storeData(notificationStatusKey, "yes");
               alert("Push Notifications enabled");
-              setNotificationsEnabled(true);
+              setNotificationsStatus(true);
             } else {
               storeData(notificationStatusKey, "no");
               alert("Push Notifications disabled");
-              setNotificationsEnabled(false);
+              setNotificationsStatus(false);
             }
           })
           .catch((error) => {
@@ -131,13 +140,13 @@ const NotificationsScreen = ({ navigation }) => {
           borderWidth: 1,
           borderRadius: 30,
           paddingHorizontal: 20,
-          alignItems:'center'
+          alignItems: "center",
         }}
-        onPress={() => handleToggleNotifications(!notificationsEnabled)}
+        onPress={() => handleToggleNotifications(!notificationsStatus)}
       >
-        <Text style={{fontFamily:"ABeeZeeRegular"}}>Notifications</Text>
+        <Text style={{ fontFamily: "ABeeZeeRegular" }}>Notifications</Text>
         <Ionicons
-          name={notificationsEnabled ? "notifications" : "notifications-off"}
+          name={notificationsStatus ? "notifications" : "notifications-off"}
           size={24}
           color="red"
         />
