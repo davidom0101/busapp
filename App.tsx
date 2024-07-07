@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Platform, View } from "react-native";
 import { useFonts } from "expo-font";
 import { MainNavigator } from "./navigation/mainNavigator";
-import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
 
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -33,7 +33,7 @@ TaskManager.defineTask(
         title: data?.notification?.data.title,
         body: data?.notification?.data.message,
         status: "unseen",
-        id:uuidv4()
+        id: uuidv4(),
       });
     }
   }
@@ -105,8 +105,6 @@ export default function App() {
   };
   useEffect(() => {
     onReceiveNotification();
-  }, [notification]);
-  useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       setPushNotifcationToken(token as string);
       checkNotificationsEnabled();
@@ -120,7 +118,7 @@ export default function App() {
           title: notification.request.content.title,
           body: notification.request.content.body,
           status: "unseen",
-          id:uuidv4()
+          id: uuidv4(),
         });
       });
 
@@ -131,9 +129,8 @@ export default function App() {
             title: response.notification.request.content.title,
             body: response.notification.request.content.body,
             status: "unseen",
-            id:uuidv4()
-          });
-          onReceiveNotification();
+            id: uuidv4(),
+          }).then(() => onReceiveNotification());
         }
       );
     return () => {

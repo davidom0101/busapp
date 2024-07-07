@@ -18,7 +18,12 @@ import {
   enablePushNotificationsUrl,
   notificationStatusKey,
 } from "../components/constants";
-import { storeData } from "../components/helperFunctions";
+import {
+  clearAllNotifications,
+  getUnseenCount,
+  markNotificationAsSeenAsyncStore,
+  storeData,
+} from "../components/helperFunctions";
 
 if (
   Platform.OS === "android" &&
@@ -29,10 +34,14 @@ if (
 
 const NotificationsScreen = ({ navigation }) => {
   const [notifications, setNotifications] = useState([]);
+  const [activeFilter, setActiveFilter] = useState("all");
   const pushNotificationToken = useGlobalStateStore(
     (s) => s.pushNotificationToken
   );
   const [notificationsStatus, setNotificationsStatus] = useState(null);
+  const setunSeenNotifications = useGlobalStateStore(
+    (s) => s.setunSeenNotifications
+  );
   const checkNotificationsStatus = async () => {
     try {
       const res = await AsyncStorage.getItem(notificationStatusKey);
@@ -41,7 +50,11 @@ const NotificationsScreen = ({ navigation }) => {
       } else {
         setNotificationsStatus(true);
       }
-      console.log("notifications status stored :", res==='no',notificationsStatus);
+      console.log(
+        "notifications status stored :",
+        res === "no",
+        notificationsStatus
+      );
     } catch (e) {
       console.log("error ", e);
     }
@@ -58,9 +71,14 @@ const NotificationsScreen = ({ navigation }) => {
         ? JSON.parse(notificationsJSON)
         : [];
       setNotifications(storedNotifications);
+      onReceiveNotification();
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
+  };
+  const onReceiveNotification = async () => {
+    const unseenCount = await getUnseenCount();
+    setunSeenNotifications(unseenCount);
   };
   const handleToggleNotifications = async (status) => {
     try {
@@ -103,20 +121,48 @@ const NotificationsScreen = ({ navigation }) => {
 
   const renderItem = ({ item }) => {
     return (
-      <View
-        style={[
-          styles.notificationItem,
-          { backgroundColor: item.status === "unseen" ? "#D4D4D4" : "#fff" },
-        ]}
+      <TouchableOpacity
+        onPress={() =>
+          markNotificationAsSeenAsyncStore(item.id).then(() =>
+            fetchNotifications()
+          )
+        }
       >
-        <Text style={[styles.notificationText, { fontWeight: "bold" }]}>
-          {item?.title}
-        </Text>
-        <Text style={styles.notificationText}>{item?.body}</Text>
-      </View>
+        <View
+          style={[
+            styles.notificationItem,
+            { backgroundColor: item.status === "unseen" ? "#D4D4D4" : "#fff" },
+          ]}
+        >
+          <Text style={[styles.notificationText, { fontWeight: "bold" }]}>
+            {item?.title}
+          </Text>
+          <Text style={styles.notificationText}>{item?.body}</Text>
+        </View>
+      </TouchableOpacity>
     );
   };
-
+  const filteredNotifications = () => {
+    let filteredNotifications;
+    switch (activeFilter) {
+      case "seen":
+        filteredNotifications = notifications.filter(
+          (notification) => notification.status === "seen"
+        );
+        break;
+      case "unseen":
+        filteredNotifications = notifications.filter(
+          (notification) => notification.status === "unseen"
+        );
+        break;
+      case "all":
+      default:
+        filteredNotifications = notifications;
+        break;
+    }
+    return filteredNotifications;
+  };
+  const finalNotifications = filteredNotifications();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -130,7 +176,46 @@ const NotificationsScreen = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.titleText}>Notifications</Text>
       </View>
-      <FlatList data={notifications} renderItem={renderItem} />
+      <View style={{ flexDirection: "row" }}>
+        {["all", "unseen", "seen", "clear"].map((x, index) => {
+          return (
+            <TouchableOpacity
+              key={index}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                margin: 10,
+                padding: 4,
+                borderWidth: 1,
+                borderRadius: 30,
+                paddingHorizontal: 12,
+                alignItems: "center",
+                backgroundColor: activeFilter === x ? "red" : "#fff",
+              }}
+              onPress={() => {
+                if (x === "clear") {
+                  clearAllNotifications().then(() => {
+                    onReceiveNotification();
+                    setNotifications([]);
+                  });
+                } else {
+                  setActiveFilter(x);
+                }
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "ABeeZeeRegular",
+                  color: activeFilter === x ? "#fff" : "#000",
+                }}
+              >
+                {x}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+      <FlatList data={finalNotifications} renderItem={renderItem} />
       <TouchableOpacity
         style={{
           flexDirection: "row",

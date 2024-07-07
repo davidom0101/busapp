@@ -16,6 +16,9 @@ import * as Notifications from "expo-notifications";
 import { Linking } from "react-native";
 import { handleNotificationAsyncStore } from "../components/helperFunctions";
 
+import "react-native-get-random-values";
+import { v4 as uuidv4 } from "uuid";
+
 const Drawer = createDrawerNavigator();
 
 const HomeSideDrawer = (navigation) => {
@@ -66,12 +69,13 @@ export const MainNavigator = () => {
                   title: response.notification.request.content.title,
                   body: response.notification.request.content.body,
                   status: "unseen",
+                  id: uuidv4(),
                 });
                 onReceiveNotification();
               }
             );
 
-          return () => { 
+          return () => {
             eventListenerSubscription.remove();
             subscription.remove();
           };
