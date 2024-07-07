@@ -11,7 +11,9 @@ import ContactUsScreen from "../screens/ContactUsScreen";
 import CoachHireScreen from "../screens/CoachHireScreen";
 import TimetableScreen from "../screens/TimetableScreen";
 import TrackMyBusScreen from "../screens/TrackMyBusScreen";
-import NotificationsScreen from "../screens/Notifications"; 
+import NotificationsScreen from "../screens/Notifications";
+import * as Notifications from "expo-notifications";
+import { Linking } from "react-native";
 
 const Drawer = createDrawerNavigator();
 
@@ -35,7 +37,46 @@ const Stack = createStackNavigator();
 
 export const MainNavigator = () => {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      linking={{
+        config: {},
+        async getInitialURL() {
+          const url = await Linking.getInitialURL();
+
+          if (url != null) {
+            return url;
+          }
+          const response =
+            await Notifications.getLastNotificationResponseAsync();
+
+          return response?.notification.request.content.data.url;
+        },
+        subscribe(listener) {
+          const onReceiveURL = ({ url }: { url: string }) => listener(url);
+          const eventListenerSubscription = Linking.addEventListener(
+            "url",
+            onReceiveURL
+          );
+
+          const subscription =
+            Notifications.addNotificationResponseReceivedListener(
+              async (response) => {
+                await handleNotificationAsyncStore({
+                  title: response.notification.request.content.title,
+                  body: response.notification.request.content.body,
+                  status: "unseen",
+                });
+                onReceiveNotification();
+              }
+            );
+
+          return () => { 
+            eventListenerSubscription.remove();
+            subscription.remove();
+          };
+        },
+      }}
+    >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Home" component={HomeSideDrawer} />
         <Stack.Screen name="Detail" component={DetailScreen} />

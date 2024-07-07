@@ -7,8 +7,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import * as TaskManager from "expo-task-manager";
-import {
-  getNotifications,
+import { 
   getUnseenCount,
   handleNotificationAsyncStore,
   storeData,
@@ -28,8 +27,8 @@ TaskManager.defineTask(
       executionInfo
     );
     await handleNotificationAsyncStore({
-      title: data.notification.data.title,
-      body: data.notification.data.message,
+      title: data?.notification?.data.title,
+      body: data?.notification?.data.message,
       status: "unseen",
     });
   }
@@ -61,58 +60,43 @@ export default function App() {
   );
   const pushNotificationToken = useGlobalStateStore(
     (s) => s.pushNotificationToken
-  );
-  const setNotificationsEnabled = useGlobalStateStore(
-    (s) => s.setNotificationsEnabled
-  );
-  const notificationsEnabled = useGlobalStateStore(
-    (s) => s.notificationsEnabled
-  );
+  ); 
   const responseListener = useRef<Notifications.Subscription>();
   const onReceiveNotification = async () => {
-    const notifications = await getNotifications();
     const unseenCount = await getUnseenCount();
     setunSeenNotifications(unseenCount);
-    console.log("All notifications:", notifications);
-    console.log("Unseen notifications count:", unseenCount);
   };
   const checkNotificationsEnabled = async () => {
     try {
       const res = await AsyncStorage.getItem(notificationStatusKey);
       console.log("notifications status stored :", res);
       if (res === "no") {
-        setNotificationsEnabled(false);
-      } else {
-        const url = "https://corkconnect.ie?lceps_key=66882392342f5&add_token=";
-        fetch(`${url}${encodeURIComponent(pushNotificationToken as string)}`)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(
-                `Server error: ${response.status} ${response.statusText}`
-              );
-            }
-            return response.text();
-          })
-          .then((data) => {
-            console.log(
-              "Token sent to backend successfully:",
-              data,
-              notificationsEnabled
-            );
-            storeData(notificationStatusKey, "yes");
-          })
-          .catch((error) => {
-            console.error("Error sending token to backend:", error);
-          });
+        return;
       }
+      const url = "https://corkconnect.ie?lceps_key=66882392342f5&add_token=";
+      fetch(`${url}${encodeURIComponent(pushNotificationToken as string)}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `Server error: ${response.status} ${response.statusText}`
+            );
+          }
+          return response.text();
+        })
+        .then((data) => {
+          console.log("Token sent to backend successfully:", data);
+          storeData(notificationStatusKey, "yes");
+        })
+        .catch((error) => {
+          console.error("Error sending token to backend:", error);
+        });
     } catch (error) {
       console.log("error checking notification status :", error);
     }
   };
   useEffect(() => {
     onReceiveNotification();
-  }, [notification]);
-  console.log("notifications enabled :", notificationsEnabled);
+  }, [notification]); 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
       setPushNotifcationToken(token as string);
@@ -120,23 +104,25 @@ export default function App() {
     });
     notificationListener.current =
       Notifications.addNotificationReceivedListener(async (notification) => {
-        setNotification(notification);
-        // console.log("notification :", notification);
+        setNotification(notification); 
         await handleNotificationAsyncStore({
           title: notification.request.content.title,
           body: notification.request.content.body,
           status: "unseen",
         });
-        // Alert.alert(
-        //   notification.request.content.title as string,
-        //   notification.request.content.body as string
-        // );
       });
 
     responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log("response recieve lisnet", response);
-      });
+      Notifications.addNotificationResponseReceivedListener(
+        async (response) => { 
+          await handleNotificationAsyncStore({
+            title: response.notification.request.content.title,
+            body: response.notification.request.content.body,
+            status: "unseen",
+          });
+          onReceiveNotification();
+        }
+      );
     return () => {
       notificationListener.current &&
         Notifications.removeNotificationSubscription(
