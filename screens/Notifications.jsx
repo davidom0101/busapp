@@ -229,7 +229,11 @@ const NotificationsScreen = ({ navigation }) => {
         }}
         onPress={() => handleToggleNotifications(!notificationsStatus)}
       >
-        <Text style={{ fontFamily: "ABeeZeeRegular" }}>Notifications</Text>
+        <Text style={{ fontFamily: "ABeeZeeRegular" }}>
+          {notificationsStatus
+            ? "Disable Notifications"
+            : "Enable Notifications"}
+        </Text>
         <Ionicons
           name={notificationsStatus ? "notifications" : "notifications-off"}
           size={24}

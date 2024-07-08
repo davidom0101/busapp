@@ -15,7 +15,10 @@ import {
   storeData,
 } from "./components/helperFunctions";
 import { useGlobalStateStore } from "./components/globalStateStore";
-import { notificationStatusKey } from "./components/constants";
+import {
+  enablePushNotificationsUrl,
+  notificationStatusKey,
+} from "./components/constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
@@ -71,15 +74,18 @@ export default function App() {
     const unseenCount = await getUnseenCount();
     setunSeenNotifications(unseenCount);
   };
-  const checkNotificationsEnabled = async () => {
+  const checkNotificationsEnabled = async (token) => {
     try {
       const res = await AsyncStorage.getItem(notificationStatusKey);
       console.log("notifications status stored :", res);
       if (res === "no") {
         return;
       }
-      const url = "https://corkconnect.ie?lceps_key=66882392342f5&add_token=";
-      fetch(`${url}${encodeURIComponent(pushNotificationToken as string)}`)
+      fetch(
+        `${enablePushNotificationsUrl}${encodeURIComponent(
+          token as string
+        )}`
+      )
         .then((response) => {
           if (!response.ok) {
             throw new Error(
@@ -96,7 +102,7 @@ export default function App() {
           console.error(
             "Error sending token to backend:",
             error,
-            pushNotificationToken
+            token
           );
         });
     } catch (error) {
@@ -107,7 +113,7 @@ export default function App() {
     onReceiveNotification();
     registerForPushNotificationsAsync().then((token) => {
       setPushNotifcationToken(token as string);
-      checkNotificationsEnabled();
+      checkNotificationsEnabled(token);
     });
     notificationListener.current =
       Notifications.addNotificationReceivedListener(async (notification) => {
