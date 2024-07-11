@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Platform, View } from "react-native";
+import { Alert, Platform, View } from "react-native";
 import { useFonts } from "expo-font";
 import { MainNavigator } from "./navigation/mainNavigator";
 import "react-native-get-random-values";
@@ -37,6 +37,7 @@ TaskManager.defineTask(
         body: data?.notification?.data.message,
         status: "unseen",
         id: uuidv4(),
+        time: new Date().toDateString(),
       });
     }
   }
@@ -66,9 +67,6 @@ export default function App() {
   const setPushNotifcationToken = useGlobalStateStore(
     (s) => s.setPushNotifcationToken
   );
-  const pushNotificationToken = useGlobalStateStore(
-    (s) => s.pushNotificationToken
-  );
   const responseListener = useRef<Notifications.Subscription>();
   const onReceiveNotification = async () => {
     const unseenCount = await getUnseenCount();
@@ -82,9 +80,7 @@ export default function App() {
         return;
       }
       fetch(
-        `${enablePushNotificationsUrl}${encodeURIComponent(
-          token as string
-        )}`
+        `${enablePushNotificationsUrl}${encodeURIComponent(token as string)}`
       )
         .then((response) => {
           if (!response.ok) {
@@ -99,16 +95,13 @@ export default function App() {
           storeData(notificationStatusKey, "yes");
         })
         .catch((error) => {
-          console.error(
-            "Error sending token to backend:",
-            error,
-            token
-          );
+          console.error("Error sending token to backend:", error, token);
         });
     } catch (error) {
       console.log("error checking notification status :", error);
     }
   };
+  console.log("time :", new Date().toDateString());
   useEffect(() => {
     onReceiveNotification();
     registerForPushNotificationsAsync().then((token) => {
@@ -120,23 +113,34 @@ export default function App() {
         setNotification(notification);
         console.log(notification);
         onReceiveNotification();
-        await handleNotificationAsyncStore({
-          title: notification.request.content.title,
-          body: notification.request.content.body,
-          status: "unseen",
-          id: uuidv4(),
-        });
+        if (notification.request.content.title) {
+          await handleNotificationAsyncStore({
+            title: notification.request.content.title,
+            body: notification.request.content.body,
+            status: "unseen",
+            id: uuidv4(),
+            time: new Date().toDateString(),
+          });
+        }
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener(
         async (response) => {
-          await handleNotificationAsyncStore({
-            title: response.notification.request.content.title,
-            body: response.notification.request.content.body,
-            status: "unseen",
-            id: uuidv4(),
-          }).then(() => onReceiveNotification());
+          if (response.notification.request.content.title) {
+            await handleNotificationAsyncStore({
+              title: response.notification.request.content.title,
+              body: response.notification.request.content.body,
+              status: "unseen",
+              id: uuidv4(),
+              time: new Date().toDateString(),
+            }).then(() => onReceiveNotification());
+          }
+
+          // Alert.alert(
+          //   response.notification.request.content.title,
+          //   response.notification.request.content.body
+          // );
         }
       );
     return () => {

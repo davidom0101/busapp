@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Platform,
   UIManager,
+  Alert,
 } from "react-native";
 import Constants from "expo-constants";
 import { BackIcon } from "../components/Icons"; // Ensure the import path is correct.
@@ -24,6 +25,7 @@ import {
   markNotificationAsSeenAsyncStore,
   storeData,
 } from "../components/helperFunctions";
+import { useNavigation } from "@react-navigation/native";
 
 if (
   Platform.OS === "android" &&
@@ -32,7 +34,8 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-const NotificationsScreen = ({ navigation }) => {
+const NotificationsScreen = () => {
+  const navigation = useNavigation();
   const [notifications, setNotifications] = useState([]);
   const [activeFilter, setActiveFilter] = useState("all");
   const pushNotificationToken = useGlobalStateStore(
@@ -122,11 +125,12 @@ const NotificationsScreen = ({ navigation }) => {
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        onPress={() =>
+        onPress={() => {
           markNotificationAsSeenAsyncStore(item.id).then(() =>
             fetchNotifications()
-          )
-        }
+          );
+          Alert.alert(item.title, item.body);
+        }}
       >
         <View
           style={[
@@ -138,6 +142,9 @@ const NotificationsScreen = ({ navigation }) => {
             {item?.title}
           </Text>
           <Text style={styles.notificationText}>{item?.body}</Text>
+          <Text style={([styles.notificationText], { fontSize: 10 })}>
+            {item?.time}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -169,7 +176,7 @@ const NotificationsScreen = ({ navigation }) => {
         <TouchableOpacity
           style={styles.backBtn}
           onPress={() => {
-            navigation.pop();
+            navigation.goBack()
           }}
         >
           <BackIcon />
@@ -227,7 +234,9 @@ const NotificationsScreen = ({ navigation }) => {
           paddingHorizontal: 20,
           alignItems: "center",
         }}
-        onPress={() => handleToggleNotifications(!notificationsStatus)}
+        onPress={() => {
+          handleToggleNotifications(!notificationsStatus);
+        }}
       >
         <Text style={{ fontFamily: "ABeeZeeRegular" }}>
           {notificationsStatus

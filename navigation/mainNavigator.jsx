@@ -13,12 +13,17 @@ import TimetableScreen from "../screens/TimetableScreen";
 import TrackMyBusScreen from "../screens/TrackMyBusScreen";
 import NotificationsScreen from "../screens/Notifications";
 import * as Notifications from "expo-notifications";
-import { Linking } from "react-native";
-import { handleNotificationAsyncStore } from "../components/helperFunctions";
+import {
+  getUnseenCount,
+  handleNotificationAsyncStore,
+} from "../components/helperFunctions";
 
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
+import { useGlobalStateStore } from "../components/globalStateStore";
+import * as Linking from "expo-linking";
 
+const prefix = Linking.createURL("/");
 const Drawer = createDrawerNavigator();
 
 const HomeSideDrawer = (navigation) => {
@@ -40,23 +45,36 @@ const HomeSideDrawer = (navigation) => {
 const Stack = createStackNavigator();
 
 export const MainNavigator = () => {
+  const setunSeenNotifications = useGlobalStateStore(
+    (s) => s.setunSeenNotifications
+  );
+  const onReceiveNotification = async () => {
+    const unseenCount = await getUnseenCount();
+    setunSeenNotifications(unseenCount);
+  };
   return (
     <NavigationContainer
       linking={{
-        config: {},
+        prefixes: [Linking.createURL("/")],
+        config: {
+          screens: {
+            Notifications: "Notifications",
+          },
+        },
         async getInitialURL() {
           const url = await Linking.getInitialURL();
-
           if (url != null) {
             return url;
           }
           const response =
             await Notifications.getLastNotificationResponseAsync();
-
-          return response?.notification.request.content.data.url;
+          return response?.notification.request.content.data?.screen;
         },
         subscribe(listener) {
-          const onReceiveURL = ({ url }: { url: string }) => listener(url);
+          const onReceiveURL = ({ url }) => {
+            listener(url);
+          };
+
           const eventListenerSubscription = Linking.addEventListener(
             "url",
             onReceiveURL
@@ -64,14 +82,8 @@ export const MainNavigator = () => {
 
           const subscription =
             Notifications.addNotificationResponseReceivedListener(
-              async (response) => {
-                await handleNotificationAsyncStore({
-                  title: response.notification.request.content.title,
-                  body: response.notification.request.content.body,
-                  status: "unseen",
-                  id: uuidv4(),
-                });
-                onReceiveNotification();
+              (response) => {
+                listener(response.notification.request.content.data?.screen);
               }
             );
 

@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-export const handleNotificationAsyncStore = async (notification) => {
+export const 
+handleNotificationAsyncStore = async (notification) => {
   try {
     const notificationsJSON = await AsyncStorage.getItem("notifications");
     const notifications = notificationsJSON

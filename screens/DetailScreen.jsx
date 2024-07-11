@@ -18,7 +18,7 @@ const DetailScreen = ({ navigation, route }) => {
 
             <WebView
                 style={{ flex: 1 }}
-                source={{ uri: route.params.url }} 
+                source={{ uri: route.params?.url }} 
             />
         </View>
     )
