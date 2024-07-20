@@ -11,9 +11,7 @@
       "resizeMode": "cover",
       "backgroundColor": "#ed2a2b"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
       "buildNumber": "1.0.0",
@@ -21,28 +19,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ff5757"
+        "backgroundColor": "#ff5757",
+        "foregroundImage": "./assets/adaptive-icon.png"
       },
       "package": "com.barryscoaches.app",
-      "versionCode": 1,
-      "versionName": "1.0.0"
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "your-project-id"
-      }
-    },
-    "submit": {
-      "production": {
-        "ios": {
-          "appleId": "your-email@example.com",
-          "ascAppId": "your-app-store-id",
-          "appleTeamId": "your-apple-team-id"
-        }
+        "projectId": "bf429721-9d2a-4d74-894f-f1c56d161716"
       }
     }
   }

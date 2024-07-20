@@ -16,9 +16,9 @@ import { AntDesign } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import constants from "../constants/constants";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase/firebase";
-import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
+import { db } from "../firebase/firebase";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -199,42 +199,35 @@ const TimetableScreen = ({ navigation }) => {
   const generatePDF = async () => {
     setLoading(true);
     try {
-      const pdfData = [];
+      let pdfUrl = "";
 
-      let selectedData = [];
+      // Determine the PDF URL based on selectedOption
       if (selectedOption === "Little Island") {
-        selectedData = litf;
+        pdfUrl =
+          "https://drive.google.com/uc?export=download&id=1zYSMcWpBhVacdXP_3uD93s2c-uB4Vbko";
       } else if (selectedOption === "Cobh - Cork Route 200") {
-        selectedData = ccr;
+        pdfUrl =
+          "https://drive.google.com/uc?export=download&id=1AClWlHgAVZQpLcv6fCcG6yx5rSRSXJtX";
       } else if (selectedOption === "Cobh - Carrigtwohill - Little Island") {
-        selectedData = ccli;
+        pdfUrl =
+          "https://drive.google.com/uc?export=download&id=12psmZW_yf8LZdUBUmrqF70Q8mxqO37dt";
+      } else {
+        // Handle the case where selectedOption doesn't match any known options
+        console.error("Invalid selectedOption:", selectedOption);
+        setLoading(false);
+        return;
       }
-      selectedData.forEach((station) => {
-        const stationData = {
-          stationName:
-            selectedOption === "Cobh - Cork Route 200"
-              ? station.stopName
-              : station.stop_name,
-          stops: [],
-        };
-        station.times.forEach((time) => {
-          stationData.stops.push({ stopName: time });
-        });
-        pdfData.push(stationData);
-      });
 
-      let htmlContent = "<h1>Timetable PDF</h1>";
-      pdfData.forEach((station) => {
-        htmlContent += `<h2>${station.stationName}</h2>`;
-        station.stops.forEach((stop) => {
-          htmlContent += `<p>${stop.stopName}</p>`;
-        });
-      });
+      // Download the PDF file directly
+      const pdf = await FileSystem.downloadAsync(
+        pdfUrl,
+        FileSystem.documentDirectory + "downloaded.pdf"
+      );
 
-      const pdf = await Print.printToFileAsync({ html: htmlContent });
-      setLoading(false);
-
+      // Share the downloaded PDF
       await Sharing.shareAsync(pdf.uri, { mimeType: "application/pdf" });
+
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error("Error generating PDF:", error);
