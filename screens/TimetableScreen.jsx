@@ -20,9 +20,9 @@ import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import { db } from "../firebase/firebase";
 
-if (Platform.OS === "android") {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
+// if (Platform.OS === "android") {
+//   UIManager.setLayoutAnimationEnabledExperimental(true);
+// }xx
 
 const AccordionItem = ({ children, title, expanded, onHeaderPress }) => {
   const body = <View style={styles.accordBody}>{children}</View>;
