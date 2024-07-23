@@ -18,11 +18,11 @@ import constants from "../constants/constants";
 import { collection, getDocs } from "firebase/firestore";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
-import { db } from "../firebase/firebase";
+import { db } from "../base/firebase";
 
-// if (Platform.OS === "android") {
-//   UIManager.setLayoutAnimationEnabledExperimental(true);
-// }xx
+if (Platform.OS === "android") {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 const AccordionItem = ({ children, title, expanded, onHeaderPress }) => {
   const body = <View style={styles.accordBody}>{children}</View>;
