@@ -6,3 +6,8 @@ credentials
 credentials.json
 .env
 .expo
+# Ignore all files in the .history directory
+.history/
+# Optionally, ignore any other specific patterns or files
+package-lock.json
+yarn.lock
