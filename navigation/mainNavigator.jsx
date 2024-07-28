@@ -22,6 +22,7 @@ import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import { useGlobalStateStore } from "../components/globalStateStore";
 import * as Linking from "expo-linking";
+import PDFViewer from "../screens/PDFViewer";
 
 const prefix = Linking.createURL("/");
 const Drawer = createDrawerNavigator();
@@ -104,6 +105,7 @@ export const MainNavigator = () => {
         <Stack.Screen name="Timetable" component={TimetableScreen} />
         <Stack.Screen name="TrackMyBus" component={TrackMyBusScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
+        <Stack.Screen name="PDFViewer" component={PDFViewer} />
       </Stack.Navigator>
     </NavigationContainer>
   );

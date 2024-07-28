@@ -9,6 +9,7 @@ import {
   UIManager,
   LayoutAnimation,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import Constants from "expo-constants";
 import { BackIcon } from "../components/Icons";
@@ -19,6 +20,8 @@ import { collection, getDocs } from "firebase/firestore";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import { db } from "../firebase/firebase";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -78,8 +81,9 @@ const Accordion = ({ data }) => {
   );
 };
 
-const TimetableScreen = ({ navigation }) => {
+const TimetableScreen = () => {
   const [activeDay, setActiveDay] = useState("Mon-Fri");
+  const navigation = useNavigation();
   const [activeButton, setActiveButton] = useState(
     "Little Island To Hollyhill"
   );
@@ -98,6 +102,7 @@ const TimetableScreen = ({ navigation }) => {
   const [loadCcr, setLoadCcr] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Little Island");
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
   useEffect(() => {
     getAllDataFromCollection();
@@ -217,17 +222,39 @@ const TimetableScreen = ({ navigation }) => {
         setLoading(false);
         return;
       }
-
-      // Download the PDF file directly
-      const pdf = await FileSystem.downloadAsync(
-        pdfUrl,
-        FileSystem.documentDirectory + "downloaded.pdf"
-      );
-
-      // Share the downloaded PDF
-      await Sharing.shareAsync(pdf.uri, { mimeType: "application/pdf" });
-
-      setLoading(false);
+      const cache = await AsyncStorage.getItem(selectedOption);
+      if (cache) {
+        navigation.navigate("PDFViewer", { uri: cache });
+        setLoading(false);
+      } else {
+        const customFolderUri =
+          FileSystem.documentDirectory + "Cobh_TimeTables" + "/";
+        const folderInfo = await FileSystem.getInfoAsync(customFolderUri);
+        if (!folderInfo.exists) {
+          await FileSystem.makeDirectoryAsync(customFolderUri, {
+            intermediates: true,
+          });
+        }
+        const downloadResumable = FileSystem.createDownloadResumable(
+          pdfUrl,
+          customFolderUri + selectedOption + ".pdf",
+          {},
+          (progress) => {
+            const p =
+              (progress.totalBytesWritten /
+                progress.totalBytesExpectedToWrite) *
+              100;
+            setDownloadProgress(p.toFixed(0));
+            console.log(
+              `Downloaded ${progress.totalBytesWritten} of ${progress.totalBytesExpectedToWrite} bytes.`
+            );
+          }
+        );
+        const { uri } = await downloadResumable.downloadAsync();
+        await AsyncStorage.setItem(selectedOption, uri);
+        navigation.navigate("PDFViewer", { uri: uri });
+        setLoading(false);
+      }
     } catch (error) {
       setLoading(false);
       console.error("Error generating PDF:", error);
@@ -506,7 +533,7 @@ const TimetableScreen = ({ navigation }) => {
           style={styles.pdfButton}
         >
           {loading ? (
-            <ActivityIndicator size={"small"} />
+            <Text style={styles.textStyles}>{downloadProgress}%</Text>
           ) : (
             <Text style={styles.textStyles}>Download Time table PDF</Text>
           )}
