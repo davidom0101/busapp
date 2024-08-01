@@ -16,10 +16,9 @@ import { BackIcon } from "../components/Icons";
 import { AntDesign } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import constants from "../constants/constants";
-import { collection, getDocs } from "firebase/firestore";
-import * as Sharing from "expo-sharing";
+//import { collection, getDocs } from "firebase/firestore";
 import * as FileSystem from "expo-file-system";
-import { db } from "../firebase/firebase";
+//import { db } from "../firebase/firebase";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -113,24 +112,24 @@ const TimetableScreen = () => {
   const getAllDataFromCollection = async () => {
     try {
       setLoadLitf(true);
-      const collectionRef = collection(db, "LITF");
-      const querySnapshot = await getDocs(collectionRef);
+      // const collectionRef = collection(db, "LITF");
+      // const querySnapshot = await getDocs(collectionRef);
 
-      const allData = [];
-      querySnapshot.forEach((doc) => {
-        if (doc.exists()) {
-          const { stops, direction } = doc.data();
-          allData.push({ id: doc.id, direction, stops });
-        } else {
-          console.log("No such document with ID: ", doc.id);
-        }
-      });
-      const filteredData = allData.filter((item) => {
-        return item.direction == activeButton;
-      });
-      const stops = filteredData.length > 0 ? filteredData[0].stops : [];
-      setLitf(stops);
-      setTimetables(allData);
+      // const allData = [];
+      // querySnapshot.forEach((doc) => {
+      //   if (doc.exists()) {
+      //     const { stops, direction } = doc.data();
+      //     allData.push({ id: doc.id, direction, stops });
+      //   } else {
+      //     console.log("No such document with ID: ", doc.id);
+      //   }
+      // });
+      // const filteredData = allData.filter((item) => {
+      //   return item.direction == activeButton;
+      // });
+      // const stops = filteredData.length > 0 ? filteredData[0].stops : [];
+      // setLitf(stops);
+      // setTimetables(allData);
       setLoadLitf(false);
     } catch (error) {
       console.error("Error getting documents from collection:", error);
@@ -141,24 +140,24 @@ const TimetableScreen = () => {
   const getAllDataCCLIFromCollection = async () => {
     try {
       setLoadCcli(true);
-      const collectionRef = collection(db, "CCLI");
-      const querySnapshot = await getDocs(collectionRef);
+      // const collectionRef = collection(db, "CCLI");
+      // const querySnapshot = await getDocs(collectionRef);
 
-      const allData = [];
-      querySnapshot.forEach((doc) => {
-        if (doc.exists()) {
-          const { stops, direction } = doc.data();
-          allData.push({ id: doc.id, direction, stops });
-        } else {
-          console.log("No such document with ID: ", doc.id);
-        }
-      });
-      const filteredData = allData.filter((item) => {
-        return item.direction == activeButton3;
-      });
-      const stops = filteredData.length > 0 ? filteredData[0].stops : [];
-      setCcli(stops);
-      setTimetables3(allData);
+      // const allData = [];
+      // querySnapshot.forEach((doc) => {
+      //   if (doc.exists()) {
+      //     const { stops, direction } = doc.data();
+      //     allData.push({ id: doc.id, direction, stops });
+      //   } else {
+      //     console.log("No such document with ID: ", doc.id);
+      //   }
+      // });
+      // const filteredData = allData.filter((item) => {
+      //   return item.direction == activeButton3;
+      // });
+      // const stops = filteredData.length > 0 ? filteredData[0].stops : [];
+      // setCcli(stops);
+      // setTimetables3(allData);
       setLoadCcli(false);
     } catch (error) {
       console.error("Error getting documents from collection:", error);
@@ -169,27 +168,27 @@ const TimetableScreen = () => {
   const getAllDataOfCCRFromCollection = async () => {
     try {
       setLoadCcr(true);
-      const collectionRef = collection(db, "CCR");
-      const querySnapshot = await getDocs(collectionRef);
+      // const collectionRef = collection(db, "CCR");
+      // const querySnapshot = await getDocs(collectionRef);
 
-      const allData = [];
-      querySnapshot.forEach((doc) => {
-        if (doc.exists()) {
-          const { stopName, times, direction, daysRunning } = doc.data();
-          allData.push({ id: doc.id, direction, stopName, times, daysRunning });
-        } else {
-          console.log("No such document with ID: ", doc.id);
-        }
-      });
-      const filteredDataByDaysRunning = allData.filter((item) => {
-        return item.daysRunning == activeDay;
-      });
+      // const allData = [];
+      // querySnapshot.forEach((doc) => {
+      //   if (doc.exists()) {
+      //     const { stopName, times, direction, daysRunning } = doc.data();
+      //     allData.push({ id: doc.id, direction, stopName, times, daysRunning });
+      //   } else {
+      //     console.log("No such document with ID: ", doc.id);
+      //   }
+      // });
+      // const filteredDataByDaysRunning = allData.filter((item) => {
+      //   return item.daysRunning == activeDay;
+      // });
 
-      const filteredData = filteredDataByDaysRunning.filter((item) => {
-        return item.direction === activeButton2;
-      });
-      setCcr(filteredData);
-      setTimetables2(allData);
+      // const filteredData = filteredDataByDaysRunning.filter((item) => {
+      //   return item.direction === activeButton2;
+      // });
+      // setCcr(filteredData);
+      // setTimetables2(allData);
       setLoadCcr(false);
     } catch (error) {
       console.error("Error getting documents from collection:", error);
