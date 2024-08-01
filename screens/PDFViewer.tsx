@@ -82,3 +82,4 @@ const styles = StyleSheet.create({
 // "@config-plugins/react-native-blob-util",
 // "@config-plugins/react-native-pdf"
 // "react-native-pdf": "^6.7.5",
+//"expo-dev-client": "~4.0.20",
