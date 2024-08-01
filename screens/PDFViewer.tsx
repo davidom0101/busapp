@@ -79,5 +79,6 @@ const styles = StyleSheet.create({
   },
 });
 //Plugins
-      // "@config-plugins/react-native-blob-util",
-      // "@config-plugins/react-native-pdf"
+// "@config-plugins/react-native-blob-util",
+// "@config-plugins/react-native-pdf"
+// "react-native-pdf": "^6.7.5",
