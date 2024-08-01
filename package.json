@@ -39,7 +39,12 @@
     "react-native-svg": "15.2.0",
     "react-native-webview": "13.8.6",
     "uuid": "^10.0.0",
-    "zustand": "^4.5.4"
+    "zustand": "^4.5.4",
+    "react-native-pdf": "^6.7.5",
+    "expo-dev-client": "~4.0.20",
+    "@config-plugins/react-native-blob-util": "^8.0.0",
+    "@config-plugins/react-native-pdf": "^8.0.0",
+    "react-native-blob-util": "^0.19.11"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
