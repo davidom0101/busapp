@@ -78,3 +78,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+//Plugins
+      // "@config-plugins/react-native-blob-util",
+      // "@config-plugins/react-native-pdf"
