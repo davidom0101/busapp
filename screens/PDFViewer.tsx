@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import Pdf from "react-native-pdf";
+//import Pdf from "react-native-pdf";
 import Constants from "expo-constants";
 import { BackIcon } from "../components/Icons";
 
@@ -32,7 +32,7 @@ export default function PDFViewer() {
         </TouchableOpacity>
         <Text style={styles.titleText}>Timetable</Text>
       </View>
-      <Pdf
+      {/* <Pdf
         source={source}
         onLoadComplete={(numberOfPages, filePath) => {
           console.log(`Number of pages: ${numberOfPages}`);
@@ -47,7 +47,7 @@ export default function PDFViewer() {
           console.log(`Link pressed: ${uri}`);
         }}
         style={{ flex: 1, width, height }}
-      />
+      /> */}
     </SafeAreaView>
   );
 }
