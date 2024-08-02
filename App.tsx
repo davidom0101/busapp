@@ -20,7 +20,14 @@ import {
   notificationStatusKey,
 } from "./components/constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LogLevel, OneSignal } from 'react-native-onesignal';
+import Constants from "expo-constants";
 
+OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+OneSignal.initialize(Constants.expoConfig.extra.oneSignalAppId);
+
+// Also need enable notifications to complete OneSignal setup
+OneSignal.Notifications.requestPermission(true);
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 
 TaskManager.defineTask(
