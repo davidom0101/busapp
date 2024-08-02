@@ -36,6 +36,16 @@
       }
     },
     "owner": "davidomalley",
-    "plugins": ["expo-font"]
+    "plugins": [
+      "expo-font",
+      "@config-plugins/react-native-blob-util",
+"@config-plugins/react-native-pdf",
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ]
+    ]
   }
 }
