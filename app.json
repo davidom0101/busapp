@@ -33,8 +33,7 @@
     "extra": {
       "eas": {
         "projectId": "27a7b130-a0ae-4a45-a4cf-5ab6d7c90751"
-      },
-      "oneSignalAppId": "2acd1f5c-c91b-4dda-bc15-6823e1ead460"
+      }
     },
     "owner": "davidomalley",
     "plugins": [

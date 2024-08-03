@@ -20,16 +20,11 @@ import {
   notificationStatusKey,
 } from "./components/constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LogLevel, OneSignal } from 'react-native-onesignal';
-import Constants from "expo-constants";
-
-OneSignal.Debug.setLogLevel(LogLevel.Verbose);
-OneSignal.initialize(Constants.expoConfig.extra.oneSignalAppId);
-
-// Also need enable notifications to complete OneSignal setup
-OneSignal.Notifications.requestPermission(true);
+import { LogLevel, OneSignal } from "react-native-onesignal";
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
-
+OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+OneSignal.initialize("54ed415d-dbcc-410f-bada-568b59fc80bc");
+OneSignal.Notifications.requestPermission(true);
 TaskManager.defineTask(
   BACKGROUND_NOTIFICATION_TASK,
   async ({ data, error, executionInfo }) => {
@@ -120,6 +115,7 @@ export default function App() {
         setNotification(notification);
         console.log(notification);
         onReceiveNotification();
+        console.log('notification recieved :',notification)
         if (notification.request.content.title) {
           await handleNotificationAsyncStore({
             title: notification.request.content.title,
@@ -134,6 +130,7 @@ export default function App() {
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener(
         async (response) => {
+          console.log('notification response :',response)
           if (response.notification.request.content.title) {
             await handleNotificationAsyncStore({
               title: response.notification.request.content.title,
