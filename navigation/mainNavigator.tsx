@@ -13,10 +13,8 @@ import TimetableScreen from "../screens/TimetableScreen";
 import TrackMyBusScreen from "../screens/TrackMyBusScreen";
 import NotificationsScreen from "../screens/Notifications";
 import * as Notifications from "expo-notifications";
-import {
-  getUnseenCount, 
-} from "../components/helperFunctions";
- 
+import { getUnseenCount } from "../components/helperFunctions";
+
 import { useGlobalStateStore } from "../components/globalStateStore";
 import * as Linking from "expo-linking";
 import PDFViewer from "../screens/PDFViewer";
@@ -98,11 +96,11 @@ export const MainNavigator = () => {
         <Stack.Screen name="AboutUs" component={AboutUsScreen} />
         <Stack.Screen name="FAQs" component={FAQsScreen} />
         <Stack.Screen name="ContactUs" component={ContactUsScreen} />
-        <Stack.Screen name="CoachHire" component={CoachHireScreen} />
+       <Stack.Screen name="CoachHire" component={CoachHireScreen} />
         <Stack.Screen name="Timetable" component={TimetableScreen} />
         <Stack.Screen name="TrackMyBus" component={TrackMyBusScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
-        <Stack.Screen name="PDFViewer" component={PDFViewer} />
+        <Stack.Screen name="PDFViewer" component={PDFViewer} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
