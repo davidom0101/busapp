@@ -6,8 +6,7 @@ import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 
 import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
+import * as Notifications from "expo-notifications"; 
 import * as TaskManager from "expo-task-manager";
 import {
   getUnseenCount,
@@ -205,12 +204,11 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     try {
-      const projectId =
-        Constants?.expoConfig?.extra?.eas?.projectId ??
-        Constants?.easConfig?.projectId;
+      const projectId = "27a7b130-a0ae-4a45-a4cf-5ab6d7c90751";
       if (!projectId) {
         throw new Error("Project ID not found");
       }
+
       token = (
         await Notifications.getExpoPushTokenAsync({
           projectId,

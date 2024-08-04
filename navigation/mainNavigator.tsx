@@ -14,12 +14,9 @@ import TrackMyBusScreen from "../screens/TrackMyBusScreen";
 import NotificationsScreen from "../screens/Notifications";
 import * as Notifications from "expo-notifications";
 import {
-  getUnseenCount,
-  handleNotificationAsyncStore,
+  getUnseenCount, 
 } from "../components/helperFunctions";
-
-import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
+ 
 import { useGlobalStateStore } from "../components/globalStateStore";
 import * as Linking from "expo-linking";
 import PDFViewer from "../screens/PDFViewer";
