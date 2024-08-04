@@ -23,7 +23,8 @@ import {
 import ContinuouslyScrollingText from "../components/ContinuouslyScrollingText";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useGlobalStateStore } from "../components/globalStateStore";
+
+import { useGlobalStateStore } from "../components/globalStateStore"; 
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -34,7 +35,7 @@ const itemHeight =
 const HomeScreen = ({ navigation }) => {
   const [notice, setNotice] = useState("");
   const unSeenNotifications = useGlobalStateStore((s) => s.unSeenNotifications);
-
+  
   useEffect(() => {
     fetch("https://burkesbus.ie/wp-json/wp/v2/app_notice/2242")
       .then((response) => response.json())

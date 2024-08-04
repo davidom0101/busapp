@@ -20,11 +20,9 @@ import {
   notificationStatusKey,
 } from "./components/constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LogLevel, OneSignal } from "react-native-onesignal";
+import { db } from "./firebase/firebase";
+import { doc, setDoc } from "firebase/firestore";
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
-OneSignal.Debug.setLogLevel(LogLevel.Verbose);
-OneSignal.initialize("54ed415d-dbcc-410f-bada-568b59fc80bc");
-OneSignal.Notifications.requestPermission(true);
 TaskManager.defineTask(
   BACKGROUND_NOTIFICATION_TASK,
   async ({ data, error, executionInfo }) => {
@@ -74,6 +72,20 @@ export default function App() {
     const unseenCount = await getUnseenCount();
     setunSeenNotifications(unseenCount);
   };
+  const currentDate = new Date();
+  const addTokentoFirebase = async (pushToken: string) => {
+    try {
+      await setDoc(doc(db, "pushTokens", pushToken), {
+        expoPushToken: pushToken,
+        TimeStamp: currentDate,
+      })
+        .then((x) => console.log("Token Add succesfully"))
+        .catch((error) => console.log(error));
+      console.log("push token >> ", pushToken);
+    } catch (e) {
+      console.log("error while adding document", e);
+    }
+  };
   const checkNotificationsEnabled = async (token) => {
     try {
       const res = await AsyncStorage.getItem(notificationStatusKey);
@@ -109,13 +121,14 @@ export default function App() {
     registerForPushNotificationsAsync().then((token) => {
       setPushNotifcationToken(token as string);
       checkNotificationsEnabled(token);
+      addTokentoFirebase(token);
     });
     notificationListener.current =
       Notifications.addNotificationReceivedListener(async (notification) => {
         setNotification(notification);
         console.log(notification);
         onReceiveNotification();
-        console.log('notification recieved :',notification)
+        console.log("notification recieved :", notification);
         if (notification.request.content.title) {
           await handleNotificationAsyncStore({
             title: notification.request.content.title,
@@ -130,7 +143,7 @@ export default function App() {
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener(
         async (response) => {
-          console.log('notification response :',response)
+          console.log("notification response :", response);
           if (response.notification.request.content.title) {
             await handleNotificationAsyncStore({
               title: response.notification.request.content.title,
