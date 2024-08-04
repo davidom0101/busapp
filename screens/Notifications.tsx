@@ -26,6 +26,8 @@ import {
   storeData,
 } from "../components/helperFunctions";
 import { useNavigation } from "@react-navigation/native";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
 if (
   Platform.OS === "android" &&
@@ -69,11 +71,14 @@ const NotificationsScreen = () => {
 
   const fetchNotifications = async () => {
     try {
-      const notificationsJSON = await AsyncStorage.getItem("notifications");
-      const storedNotifications = notificationsJSON
-        ? JSON.parse(notificationsJSON)
-        : [];
-      setNotifications(storedNotifications);
+      const querySnapshot = await getDocs(collection(db, "pushNotifications"));
+      let notiData = [];
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        notiData.push(doc.data());
+      });
+      setNotifications(notiData);
       onReceiveNotification();
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -176,7 +181,7 @@ const NotificationsScreen = () => {
         <TouchableOpacity
           style={styles.backBtn}
           onPress={() => {
-            navigation.goBack()
+            navigation.goBack();
           }}
         >
           <BackIcon />
