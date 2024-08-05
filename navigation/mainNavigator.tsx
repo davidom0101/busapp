@@ -100,7 +100,7 @@ export const MainNavigator = () => {
         <Stack.Screen name="Timetable" component={TimetableScreen} />
         <Stack.Screen name="TrackMyBus" component={TrackMyBusScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
-        <Stack.Screen name="PDFViewer" component={PDFViewer} /> 
+        {/* <Stack.Screen name="PDFViewer" component={PDFViewer} />  */}
       </Stack.Navigator>
     </NavigationContainer>
   );

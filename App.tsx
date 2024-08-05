@@ -2,17 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Alert, Platform, View } from "react-native";
 import { useFonts } from "expo-font";
 import { MainNavigator } from "./navigation/mainNavigator";
-import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
-
 import * as Device from "expo-device";
-import * as Notifications from "expo-notifications"; 
+import * as Notifications from "expo-notifications";
 import * as TaskManager from "expo-task-manager";
-import {
-  getUnseenCount,
-  handleNotificationAsyncStore,
-  storeData,
-} from "./components/helperFunctions";
+import { storeData } from "./components/helperFunctions";
 import { useGlobalStateStore } from "./components/globalStateStore";
 import {
   enablePushNotificationsUrl,
@@ -30,15 +23,6 @@ TaskManager.defineTask(
       data,
       executionInfo
     );
-    if (data?.notification?.data.title) {
-      await handleNotificationAsyncStore({
-        title: data?.notification?.data.title,
-        body: data?.notification?.data.message,
-        status: "unseen",
-        id: uuidv4(),
-        time: new Date().toDateString(),
-      });
-    }
   }
 );
 
@@ -56,21 +40,11 @@ export default function App() {
   const [loaded] = useFonts({
     ABeeZeeRegular: require("./assets/fonts/ABeeZee-Regular.ttf"),
   });
-  const [notification, setNotification] = useState<
-    Notifications.Notification | undefined
-  >(undefined);
-  const notificationListener = useRef<Notifications.Subscription>();
-  const setunSeenNotifications = useGlobalStateStore(
-    (s) => s.setunSeenNotifications
-  );
+
   const setPushNotifcationToken = useGlobalStateStore(
     (s) => s.setPushNotifcationToken
   );
-  const responseListener = useRef<Notifications.Subscription>();
-  const onReceiveNotification = async () => {
-    const unseenCount = await getUnseenCount();
-    setunSeenNotifications(unseenCount);
-  };
+
   const currentDate = new Date();
   const addTokentoFirebase = async (pushToken: string) => {
     try {
@@ -116,57 +90,11 @@ export default function App() {
   };
   console.log("time :", new Date().toDateString());
   useEffect(() => {
-    onReceiveNotification();
     registerForPushNotificationsAsync().then((token) => {
       setPushNotifcationToken(token as string);
       checkNotificationsEnabled(token);
       addTokentoFirebase(token);
     });
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener(async (notification) => {
-        setNotification(notification);
-        console.log(notification);
-        onReceiveNotification();
-        console.log("notification recieved :", notification);
-        if (notification.request.content.title) {
-          await handleNotificationAsyncStore({
-            title: notification.request.content.title,
-            body: notification.request.content.body,
-            status: "unseen",
-            id: uuidv4(),
-            time: new Date().toDateString(),
-          });
-        }
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener(
-        async (response) => {
-          console.log("notification response :", response);
-          if (response.notification.request.content.title) {
-            await handleNotificationAsyncStore({
-              title: response.notification.request.content.title,
-              body: response.notification.request.content.body,
-              status: "unseen",
-              id: uuidv4(),
-              time: new Date().toDateString(),
-            }).then(() => onReceiveNotification());
-          }
-
-          // Alert.alert(
-          //   response.notification.request.content.title,
-          //   response.notification.request.content.body
-          // );
-        }
-      );
-    return () => {
-      notificationListener.current &&
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        );
-      responseListener.current &&
-        Notifications.removeNotificationSubscription(responseListener.current);
-    };
   }, []);
 
   if (!loaded) {
