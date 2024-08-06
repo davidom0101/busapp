@@ -376,7 +376,7 @@ const TimetableScreen = () => {
                       <Text
                         style={{
                           fontSize: 16,
-                          paddingTop: 5,
+                          padding: 5,
                           color: "black",
                           fontWeight: "400",
                           marginRight: 10,
@@ -499,7 +499,7 @@ const TimetableScreen = () => {
                       <Text
                         style={{
                           fontSize: 16,
-                          paddingTop: 5,
+                          padding: 5,
                           color: "black",
                           fontWeight: "400",
                           marginRight: 10,
@@ -588,7 +588,7 @@ const TimetableScreen = () => {
                       <Text
                         style={{
                           fontSize: 16,
-                          paddingTop: 5,
+                          padding: 5,
                           color: "black",
                           fontWeight: "400",
                           marginRight: 10,
