@@ -372,7 +372,7 @@ const TimetableScreen = () => {
                 <ScrollView horizontal={true}>
                   {stop.times.map((time, i) => (
                     <View
-                    key={i}
+                      key={i}
                       style={{ justifyContent: "center", borderLeftWidth: 1 }}
                     >
                       <Text
@@ -383,7 +383,6 @@ const TimetableScreen = () => {
                           fontWeight: "400",
                           marginRight: 10,
                         }}
-                        
                       >
                         {time}
                       </Text>
@@ -497,7 +496,7 @@ const TimetableScreen = () => {
                 <ScrollView horizontal={true}>
                   {stop.times.map((time, i) => (
                     <View
-                    key={i}
+                      key={i}
                       style={{ justifyContent: "center", borderLeftWidth: 1 }}
                     >
                       <Text
@@ -508,7 +507,6 @@ const TimetableScreen = () => {
                           fontWeight: "400",
                           marginRight: 10,
                         }}
-                   
                       >
                         {time}
                       </Text>
@@ -568,48 +566,58 @@ const TimetableScreen = () => {
             fontSize: 12,
           }}
         />
-        {ccli.map((stop, index) => {
-          return (
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                borderWidth: 1,
-                borderBottomWidth: index === stop.length ? 1 : 0,
-              }}
-              key={index}
-            >
-              <View style={{ flex: 0.4, backgroundColor: "#D4D4D4" }}>
-                <Text style={{ padding: 2, borderBottomWidth: 0 }}>
-                  {stop.stop_name}
-                </Text>
-              </View>
-              <View style={{ flex: 0.6 }}>
-                <ScrollView horizontal={true}>
-                  {stop.times.map((time, i) => (
-                    <View
-                    key={i}
-                      style={{ justifyContent: "center", borderLeftWidth: 1 }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          padding: 5,
-                          color: "black",
-                          fontWeight: "400",
-                          marginRight: 10,
-                        }}
-                      
+        <ScrollView horizontal={true}>
+          <ScrollView>
+            {ccli.map((stop, index) => {
+              return (
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    borderWidth: 1,
+                    borderBottomWidth: 1,
+                    borderTopWidth: index === 0 ? 1 : 0,
+                  }}
+                  key={index}
+                >
+                  <View
+                    style={{
+                      flex: 0.4,
+                      backgroundColor: "#D4D4D4",
+                      maxWidth: "30%",
+                    }}
+                  >
+                    <Text style={{ padding: 2, borderBottomWidth: 0 }}>
+                      {stop.stop_name}
+                    </Text>
+                  </View>
+                  <View style={{ flex: 0.6, flexDirection: "row" }}>
+                    {/* <ScrollView horizontal={true}> */}
+                    {stop.times.map((time, i) => (
+                      <View
+                        key={i}
+                        style={{ justifyContent: "center", borderLeftWidth: 1 }}
                       >
-                        {time}
-                      </Text>
-                    </View>
-                  ))}
-                </ScrollView>
-              </View>
-            </View>
-          );
-        })}
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            padding: 5,
+                            color: "black",
+                            fontWeight: "400",
+                            marginRight: 10,
+                          }}
+                        >
+                          {time}
+                        </Text>
+                      </View>
+                    ))}
+                    {/* </ScrollView> */}
+                  </View>
+                </View>
+              );
+            })}
+          </ScrollView>
+        </ScrollView>
         {/* <Accordion
           data={ccli.map((stop, index) => ({
             title: stop.stop_name,
