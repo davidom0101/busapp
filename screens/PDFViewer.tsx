@@ -6,10 +6,15 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   View,
+  PermissionsAndroid,
+  Platform,
+  Button,
 } from "react-native";
-import Pdf from "react-native-pdf";
+//import Pdf from "react-native-pdf";
 import Constants from "expo-constants";
 import { BackIcon } from "../components/Icons";
+import WebView from "react-native-webview";
+import { useEffect } from "react";
 
 export default function PDFViewer() {
   const { width, height } = useWindowDimensions();
@@ -19,6 +24,32 @@ export default function PDFViewer() {
     uri: route?.params?.uri,
     cache: true,
   };
+  async function requestStoragePermission() {
+    if (Platform.OS === "android") {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: "Storage Permission",
+            message: "This app needs access to your storage to read files.",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK",
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log("You can use the storage");
+        } else {
+          console.log("Storage permission denied");
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  }
+  useEffect(() => {
+    requestStoragePermission();
+  }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header}>
@@ -32,7 +63,7 @@ export default function PDFViewer() {
         </TouchableOpacity>
         <Text style={styles.titleText}>Timetable</Text>
       </View>
-      <Pdf
+      {/* <Pdf
         source={source}
         onLoadComplete={(numberOfPages, filePath) => {
           console.log(`Number of pages: ${numberOfPages}`);
@@ -47,7 +78,16 @@ export default function PDFViewer() {
           console.log(`Link pressed: ${uri}`);
         }}
         style={{ flex: 1, width, height }}
+      /> */}
+      <WebView
+        originWhitelist={["*"]}
+        source={{
+          uri:source.uri,
+        }}
+        cacheEnabled={true}
+        cacheMode="LOAD_CACHE_ELSE_NETWORK"
       />
+      <Button  title="Open" onPress={requestStoragePermission} />
     </SafeAreaView>
   );
 }

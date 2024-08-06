@@ -96,11 +96,11 @@ export const MainNavigator = () => {
         <Stack.Screen name="AboutUs" component={AboutUsScreen} />
         <Stack.Screen name="FAQs" component={FAQsScreen} />
         <Stack.Screen name="ContactUs" component={ContactUsScreen} />
-       <Stack.Screen name="CoachHire" component={CoachHireScreen} />
+        <Stack.Screen name="CoachHire" component={CoachHireScreen} />
         <Stack.Screen name="Timetable" component={TimetableScreen} />
         <Stack.Screen name="TrackMyBus" component={TrackMyBusScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
-        {/* <Stack.Screen name="PDFViewer" component={PDFViewer} />  */}
+        <Stack.Screen name="PDFViewer" component={PDFViewer} />
       </Stack.Navigator>
     </NavigationContainer>
   );
