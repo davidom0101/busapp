@@ -1,16 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Alert, Platform, View } from "react-native";
+import React, { useEffect } from "react";
+import { Platform, View } from "react-native";
 import { useFonts } from "expo-font";
 import { MainNavigator } from "./navigation/mainNavigator";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import * as TaskManager from "expo-task-manager";
-import { storeData } from "./components/helperFunctions";
 import { useGlobalStateStore } from "./components/globalStateStore";
-import {
-  enablePushNotificationsUrl,
-  notificationStatusKey,
-} from "./components/constants";
+import { notificationStatusKey } from "./components/constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { db } from "./firebase/firebase";
 import { doc, setDoc } from "firebase/firestore";

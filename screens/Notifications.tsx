@@ -14,13 +14,8 @@ import { BackIcon } from "../components/Icons"; // Ensure the import path is cor
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useGlobalStateStore } from "../components/globalStateStore";
+import { notificationStatusKey } from "../components/constants";
 import {
-  disbalePushNotifcationsUrl,
-  enablePushNotificationsUrl,
-  notificationStatusKey,
-} from "../components/constants";
-import {
-  clearAllNotifications,
   getUnseenCount,
   markNotificationAsSeenAsyncStore,
   storeData,
@@ -119,24 +114,14 @@ const NotificationsScreen = () => {
     }
   };
   function convertToFullDate(seconds, nanoseconds) {
-    // Convert seconds to milliseconds
     const millisecondsFromSeconds = seconds * 1000;
-  
-    // Convert nanoseconds to milliseconds
     const millisecondsFromNanoseconds = nanoseconds / 1000000;
-  
-    // Calculate total milliseconds
-    const totalMilliseconds = millisecondsFromSeconds + millisecondsFromNanoseconds;
-  
-    // Create a new Date object
+    const totalMilliseconds =
+      millisecondsFromSeconds + millisecondsFromNanoseconds;
     const date = new Date(totalMilliseconds);
-  
-    // Return the full date string
     return date.toDateString();
   }
-  
 
-  
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
@@ -152,7 +137,9 @@ const NotificationsScreen = () => {
             {item?.title}
           </Text>
           <Text style={styles.notificationText}>{item?.body}</Text>
-          <Text style={{ fontSize: 10 }}>{convertToFullDate(item.date.seconds,item.date.nanoseconds)}</Text>
+          <Text style={{ fontSize: 10 }}>
+            {convertToFullDate(item.date.seconds, item.date.nanoseconds)}
+          </Text>
         </View>
       </TouchableOpacity>
     );
