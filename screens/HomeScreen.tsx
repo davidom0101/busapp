@@ -19,8 +19,7 @@ import {
   TimetablesIcon,
   BusIcon,
   ContactIcon,
-} from "../components/Icons";
-import ContinuouslyScrollingText from "../components/ContinuouslyScrollingText";
+} from "../components/Icons"; 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -79,7 +78,7 @@ const HomeScreen = ({ navigation }) => {
           }}
         >
           <Ionicons name="notifications" size={30} color="black" />
-          <Text
+          {/* <Text
             style={{
               fontFamily: "ABeeZeeRegular",
               position: "absolute",
@@ -94,7 +93,7 @@ const HomeScreen = ({ navigation }) => {
             }}
           >
             {unSeenNotifications}
-          </Text>
+          </Text> */}
         </TouchableOpacity>
       </View>
 

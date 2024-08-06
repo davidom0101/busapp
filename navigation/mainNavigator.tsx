@@ -16,8 +16,7 @@ import * as Notifications from "expo-notifications";
 import { getUnseenCount } from "../components/helperFunctions";
 
 import { useGlobalStateStore } from "../components/globalStateStore";
-import * as Linking from "expo-linking";
-import PDFViewer from "../screens/PDFViewer";
+import * as Linking from "expo-linking"; 
 
 const prefix = Linking.createURL("/");
 const Drawer = createDrawerNavigator();
@@ -100,7 +99,6 @@ export const MainNavigator = () => {
         <Stack.Screen name="Timetable" component={TimetableScreen} />
         <Stack.Screen name="TrackMyBus" component={TrackMyBusScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
-        <Stack.Screen name="PDFViewer" component={PDFViewer} />
       </Stack.Navigator>
     </NavigationContainer>
   );

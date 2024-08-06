@@ -351,7 +351,49 @@ const TimetableScreen = () => {
           onPress={handleButtonPress}
           marginB={20}
         />
-        <Accordion
+
+        {litf.map((stop, index) => {
+          return (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                borderWidth: 1,
+                borderBottomWidth: index === stop.length ? 1 : 0,
+              }}
+            >
+              <View style={{ flex: 0.4, backgroundColor: "#D4D4D4" }}>
+                <Text style={{ padding: 2, borderBottomWidth: 0 }}>
+                  {stop.stop_name}
+                </Text>
+              </View>
+              <View style={{ flex: 0.6 }}>
+                <ScrollView horizontal={true}>
+                  {stop.times.map((time, i) => (
+                    <View
+                      style={{ justifyContent: "center", borderLeftWidth: 1 }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          paddingTop: 5,
+                          color: "black",
+                          fontWeight: "400",
+                          marginRight: 10,
+                        }}
+                        key={i}
+                      >
+                        {time}
+                      </Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
+          );
+        })}
+
+        {/* <Accordion
           data={litf.map((stop, index) => ({
             title: stop.stop_name,
             content: (
@@ -379,7 +421,7 @@ const TimetableScreen = () => {
               </View>
             ),
           }))}
-        />
+        /> */}
       </View>
     );
   }
@@ -433,7 +475,47 @@ const TimetableScreen = () => {
             </TouchableOpacity>
           ))}
         </View>
-        <Accordion
+        {ccr.map((stop, index) => {
+          return (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                borderWidth: 1,
+                borderBottomWidth: index === stop.length ? 1 : 0,
+              }}
+            >
+              <View style={{ flex: 0.4, backgroundColor: "#D4D4D4" }}>
+                <Text style={{ padding: 2, borderBottomWidth: 0 }}>
+                  {stop.stopName}
+                </Text>
+              </View>
+              <View style={{ flex: 0.6 }}>
+                <ScrollView horizontal={true}>
+                  {stop.times.map((time, i) => (
+                    <View
+                      style={{ justifyContent: "center", borderLeftWidth: 1 }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          paddingTop: 5,
+                          color: "black",
+                          fontWeight: "400",
+                          marginRight: 10,
+                        }}
+                        key={i}
+                      >
+                        {time}
+                      </Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
+          );
+        })}
+        {/* <Accordion
           data={ccr.map((stop, index) => ({
             title: stop.stopName,
             content: (
@@ -449,7 +531,7 @@ const TimetableScreen = () => {
               </View>
             ),
           }))}
-        />
+        /> */}
       </View>
     );
   }
@@ -482,7 +564,47 @@ const TimetableScreen = () => {
             fontSize: 12,
           }}
         />
-        <Accordion
+        {ccli.map((stop, index) => {
+          return (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                borderWidth: 1,
+                borderBottomWidth: index === stop.length ? 1 : 0,
+              }}
+            >
+              <View style={{ flex: 0.4, backgroundColor: "#D4D4D4" }}>
+                <Text style={{ padding: 2, borderBottomWidth: 0 }}>
+                  {stop.stop_name}
+                </Text>
+              </View>
+              <View style={{ flex: 0.6 }}>
+                <ScrollView horizontal={true}>
+                  {stop.times.map((time, i) => (
+                    <View
+                      style={{ justifyContent: "center", borderLeftWidth: 1 }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          paddingTop: 5,
+                          color: "black",
+                          fontWeight: "400",
+                          marginRight: 10,
+                        }}
+                        key={i}
+                      >
+                        {time}
+                      </Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
+          );
+        })}
+        {/* <Accordion
           data={ccli.map((stop, index) => ({
             title: stop.stop_name,
             content: (
@@ -507,7 +629,7 @@ const TimetableScreen = () => {
               </View>
             ),
           }))}
-        />
+        /> */}
       </View>
     );
   }

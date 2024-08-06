@@ -188,7 +188,7 @@ const NotificationsScreen = () => {
         </TouchableOpacity>
         <Text style={styles.titleText}>Notifications</Text>
       </View>
-      <View style={{ flexDirection: "row" }}>
+      {/* <View style={{ flexDirection: "row" }}>
         {["all", "unseen", "seen", "clear"].map((x, index) => {
           return (
             <TouchableOpacity
@@ -226,7 +226,7 @@ const NotificationsScreen = () => {
             </TouchableOpacity>
           );
         })}
-      </View>
+      </View> */}
       <FlatList data={finalNotifications} renderItem={renderItem} />
       <TouchableOpacity
         style={{
