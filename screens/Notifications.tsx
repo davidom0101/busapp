@@ -26,7 +26,7 @@ import {
   storeData,
 } from "../components/helperFunctions";
 import { useNavigation } from "@react-navigation/native";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
 if (
@@ -91,36 +91,16 @@ const NotificationsScreen = () => {
   const handleToggleNotifications = async (status) => {
     try {
       if (pushNotificationToken) {
-        let url;
+        await deleteDoc(doc(db, "pushTokens", pushNotificationToken));
         if (status) {
-          url = enablePushNotificationsUrl;
+          storeData(notificationStatusKey, "yes");
+          alert("Push Notifications enabled");
+          setNotificationsStatus(true);
         } else {
-          url = disbalePushNotifcationsUrl;
+          storeData(notificationStatusKey, "no");
+          alert("Push Notifications disabled");
+          setNotificationsStatus(false);
         }
-        fetch(`${url}${encodeURIComponent(pushNotificationToken)}`)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(
-                `Server error: ${response.status} ${response.statusText}`
-              );
-            }
-            return response.text();
-          })
-          .then((data) => {
-            console.log("Token sent to backend successfully:", data);
-            if (status) {
-              storeData(notificationStatusKey, "yes");
-              alert("Push Notifications enabled");
-              setNotificationsStatus(true);
-            } else {
-              storeData(notificationStatusKey, "no");
-              alert("Push Notifications disabled");
-              setNotificationsStatus(false);
-            }
-          })
-          .catch((error) => {
-            console.error("Error sending token to backend:", error);
-          });
       }
     } catch (error) {
       console.log("error updating notifications togggle:", error);
