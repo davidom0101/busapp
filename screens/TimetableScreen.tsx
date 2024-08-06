@@ -361,6 +361,7 @@ const TimetableScreen = () => {
                 borderWidth: 1,
                 borderBottomWidth: index === stop.length ? 1 : 0,
               }}
+              key={index}
             >
               <View style={{ flex: 0.4, backgroundColor: "#D4D4D4" }}>
                 <Text style={{ padding: 2, borderBottomWidth: 0 }}>
@@ -371,6 +372,7 @@ const TimetableScreen = () => {
                 <ScrollView horizontal={true}>
                   {stop.times.map((time, i) => (
                     <View
+                    key={i}
                       style={{ justifyContent: "center", borderLeftWidth: 1 }}
                     >
                       <Text
@@ -381,7 +383,7 @@ const TimetableScreen = () => {
                           fontWeight: "400",
                           marginRight: 10,
                         }}
-                        key={i}
+                        
                       >
                         {time}
                       </Text>
@@ -484,6 +486,7 @@ const TimetableScreen = () => {
                 borderWidth: 1,
                 borderBottomWidth: index === stop.length ? 1 : 0,
               }}
+              key={index}
             >
               <View style={{ flex: 0.4, backgroundColor: "#D4D4D4" }}>
                 <Text style={{ padding: 2, borderBottomWidth: 0 }}>
@@ -494,6 +497,7 @@ const TimetableScreen = () => {
                 <ScrollView horizontal={true}>
                   {stop.times.map((time, i) => (
                     <View
+                    key={i}
                       style={{ justifyContent: "center", borderLeftWidth: 1 }}
                     >
                       <Text
@@ -504,7 +508,7 @@ const TimetableScreen = () => {
                           fontWeight: "400",
                           marginRight: 10,
                         }}
-                        key={i}
+                   
                       >
                         {time}
                       </Text>
@@ -573,6 +577,7 @@ const TimetableScreen = () => {
                 borderWidth: 1,
                 borderBottomWidth: index === stop.length ? 1 : 0,
               }}
+              key={index}
             >
               <View style={{ flex: 0.4, backgroundColor: "#D4D4D4" }}>
                 <Text style={{ padding: 2, borderBottomWidth: 0 }}>
@@ -583,6 +588,7 @@ const TimetableScreen = () => {
                 <ScrollView horizontal={true}>
                   {stop.times.map((time, i) => (
                     <View
+                    key={i}
                       style={{ justifyContent: "center", borderLeftWidth: 1 }}
                     >
                       <Text
@@ -593,7 +599,7 @@ const TimetableScreen = () => {
                           fontWeight: "400",
                           marginRight: 10,
                         }}
-                        key={i}
+                      
                       >
                         {time}
                       </Text>
