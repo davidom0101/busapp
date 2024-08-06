@@ -32,8 +32,7 @@ const itemHeight =
   (windowHeight - windowWidth * 0.4 - Constants.statusBarHeight) / 3 - 40;
 
 const HomeScreen = ({ navigation }) => {
-  const [notice, setNotice] = useState("");
-  const unSeenNotifications = useGlobalStateStore((s) => s.unSeenNotifications);
+  const [notice, setNotice] = useState(""); 
   
   useEffect(() => {
     fetch("https://burkesbus.ie/wp-json/wp/v2/app_notice/2242")

@@ -59,41 +59,16 @@ export default function App() {
       console.log("error while adding document", e);
     }
   };
-  const checkNotificationsEnabled = async (token) => {
-    try {
-      const res = await AsyncStorage.getItem(notificationStatusKey);
-      console.log("notifications status stored :", res);
-      if (res === "no") {
-        return;
-      }
-      fetch(
-        `${enablePushNotificationsUrl}${encodeURIComponent(token as string)}`
-      )
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(
-              `Server error: ${response.status} ${response.statusText}`
-            );
-          }
-          return response.text();
-        })
-        .then((data) => {
-          console.log("Token sent to backend successfully:", data);
-          storeData(notificationStatusKey, "yes");
-        })
-        .catch((error) => {
-          console.error("Error sending token to backend:", error, token);
-        });
-    } catch (error) {
-      console.log("error checking notification status :", error);
-    }
-  };
   console.log("time :", new Date().toDateString());
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => {
+    registerForPushNotificationsAsync().then(async (token) => {
       setPushNotifcationToken(token as string);
-      checkNotificationsEnabled(token);
-      addTokentoFirebase(token);
+      const res = await AsyncStorage.getItem(notificationStatusKey);
+      if (res === "no") {
+      } else {
+        console.log("notification allowed :", res);
+        addTokentoFirebase(token as string);
+      }
     });
   }, []);
 

@@ -26,7 +26,13 @@ import {
   storeData,
 } from "../components/helperFunctions";
 import { useNavigation } from "@react-navigation/native";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  setDoc,
+} from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
 if (
@@ -43,7 +49,7 @@ const NotificationsScreen = () => {
   const pushNotificationToken = useGlobalStateStore(
     (s) => s.pushNotificationToken
   );
-  const [notificationsStatus, setNotificationsStatus] = useState(null);
+  const [notificationsStatus, setNotificationsStatus] = useState<boolean>();
   const setunSeenNotifications = useGlobalStateStore(
     (s) => s.setunSeenNotifications
   );
@@ -91,12 +97,18 @@ const NotificationsScreen = () => {
   const handleToggleNotifications = async (status) => {
     try {
       if (pushNotificationToken) {
-        await deleteDoc(doc(db, "pushTokens", pushNotificationToken));
         if (status) {
+          await setDoc(doc(db, "pushTokens", pushNotificationToken), {
+            expoPushToken: pushNotificationToken,
+            TimeStamp: new Date(),
+          })
+            .then((x) => console.log("Token Add succesfully"))
+            .catch((error) => console.log(error));
           storeData(notificationStatusKey, "yes");
           alert("Push Notifications enabled");
           setNotificationsStatus(true);
         } else {
+          await deleteDoc(doc(db, "pushTokens", pushNotificationToken));
           storeData(notificationStatusKey, "no");
           alert("Push Notifications disabled");
           setNotificationsStatus(false);
@@ -106,7 +118,25 @@ const NotificationsScreen = () => {
       console.log("error updating notifications togggle:", error);
     }
   };
+  function convertToFullDate(seconds, nanoseconds) {
+    // Convert seconds to milliseconds
+    const millisecondsFromSeconds = seconds * 1000;
+  
+    // Convert nanoseconds to milliseconds
+    const millisecondsFromNanoseconds = nanoseconds / 1000000;
+  
+    // Calculate total milliseconds
+    const totalMilliseconds = millisecondsFromSeconds + millisecondsFromNanoseconds;
+  
+    // Create a new Date object
+    const date = new Date(totalMilliseconds);
+  
+    // Return the full date string
+    return date.toDateString();
+  }
+  
 
+  
   const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
@@ -117,19 +147,12 @@ const NotificationsScreen = () => {
           Alert.alert(item.title, item.body);
         }}
       >
-        <View
-          style={[
-            styles.notificationItem,
-            { backgroundColor: item.status === "unseen" ? "#D4D4D4" : "#fff" },
-          ]}
-        >
+        <View style={[styles.notificationItem, { backgroundColor: "#fff" }]}>
           <Text style={[styles.notificationText, { fontWeight: "bold" }]}>
             {item?.title}
           </Text>
           <Text style={styles.notificationText}>{item?.body}</Text>
-          <Text style={([styles.notificationText], { fontSize: 10 })}>
-            {item?.time}
-          </Text>
+          <Text style={{ fontSize: 10 }}>{convertToFullDate(item.date.seconds,item.date.nanoseconds)}</Text>
         </View>
       </TouchableOpacity>
     );
