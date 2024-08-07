@@ -79,6 +79,19 @@ const NotificationsScreen = () => {
         console.log(doc.id, " => ", doc.data());
         notiData.push(doc.data());
       });
+      notiData = notiData.filter(
+        (item) =>
+          item.date &&
+          item.date.seconds !== undefined &&
+          item.date.nanoseconds !== undefined
+      );
+
+      // Sort the remaining objects based on the date field
+      notiData.sort((a, b) => {
+        const dateA = a.date.seconds * 1e9 + a.date.nanoseconds;
+        const dateB = b.date.seconds * 1e9 + b.date.nanoseconds;
+        return dateB - dateA;
+      });
       setNotifications(notiData);
       onReceiveNotification();
     } catch (error) {

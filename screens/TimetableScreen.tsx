@@ -351,102 +351,84 @@ const TimetableScreen = () => {
           onPress={handleButtonPress}
           marginB={20}
         />
-        <ScrollView horizontal={true}>
-          <ScrollView>
-            {litf.map((stop, index) => {
-              return (
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    borderWidth: 1,
-                    borderBottomWidth: 1,
-                    borderTopWidth: index === 0 ? 1 : 0,
-                  }}
-                  key={index}
-                >
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <View style={{ flex: 0.3 }}>
+            <ScrollView>
+              {litf.map((stop, index) => {
+                return (
                   <View
                     style={{
-                      flex: 0.4,
+                      flex: 1,
+                      borderWidth: 1,
+                      borderBottomWidth: 1,
+                      borderTopWidth: index === 0 ? 1 : 0,
+                      height: 100,
                       backgroundColor: "#D4D4D4",
                       minWidth: 100,
                       width: 100,
                       maxWidth: 100,
                     }}
+                    key={index}
                   >
                     <Text style={{ padding: 2, borderBottomWidth: 0 }}>
                       {stop.stop_name}
                     </Text>
                   </View>
-                  <View style={{ flex: 0.6, flexDirection: "row" }}>
-                    {/* <ScrollView horizontal={true}> */}
-                    {stop.times.map((time, i) => (
-                      <View
-                        key={i}
-                        style={{ justifyContent: "center", borderLeftWidth: 1 }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            padding: 5,
-                            color: "black",
-                            fontWeight: "400",
-                            marginRight: 10,
-                          }}
-                        >
-                          {time}
-                        </Text>
-                      </View>
-                    ))}
-                    {/* </ScrollView> */}
-                  </View>
-                </View>
-              );
-            })}
-          </ScrollView>
-        </ScrollView>
-
-        {/* {litf.map((stop, index) => {
-          return (
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                borderWidth: 1,
-                borderBottomWidth: index === stop.length ? 1 : 0,
-              }}
-              key={index}
-            >
-              <View style={{ flex: 0.4, backgroundColor: "#D4D4D4" }}>
-                <Text style={{ padding: 2, borderBottomWidth: 0 }}>
-                  {stop.stop_name}
-                </Text>
-              </View>
-              <View style={{ flex: 0.6 }}>
-                <ScrollView horizontal={true}>
-                  {stop.times.map((time, i) => (
+                );
+              })}
+            </ScrollView>
+          </View>
+          <View style={{ flex: 0.7 }}>
+            <ScrollView horizontal={true}>
+              <ScrollView>
+                {litf.map((stop, index) => {
+                  return (
                     <View
-                      key={i}
-                      style={{ justifyContent: "center", borderLeftWidth: 1 }}
+                      style={{
+                        flex: 1,
+                        borderWidth: 1,
+                        borderBottomWidth: 1,
+                        borderTopWidth: index === 0 ? 1 : 0,
+                        height: 100,
+                      }}
+                      key={index}
                     >
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          padding: 5,
-                          color: "black",
-                          fontWeight: "400",
-                          marginRight: 10,
-                        }}
-                      >
-                        {time}
-                      </Text>
+                      <View style={{ flexDirection: "row" }}>
+                        {stop.times.map((time, i) => (
+                          <View
+                            key={i}
+                            style={{
+                              flex: 1,
+                              justifyContent: "center",
+                              borderLeftWidth: i === 0 ? 0 : 1,
+                              height: 100,
+                              width:100,
+                              maxWidth:100,
+                              minWidth:100,
+                              alignItems:'center'
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                padding: 5,
+                                color: "black",
+                                fontWeight: "400",
+                                marginRight: 10,
+                              }}
+                            >
+                              {time}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
                     </View>
-                  ))}
-                </ScrollView>
-              </View>
-            </View>
-          );
-        })} */}
+                  );
+                })}
+              </ScrollView>
+            </ScrollView>
+          </View>
+        </View>
 
         {/* <Accordion
           data={litf.map((stop, index) => ({
@@ -530,101 +512,87 @@ const TimetableScreen = () => {
             </TouchableOpacity>
           ))}
         </View>
-        <ScrollView horizontal={true}>
-          <ScrollView>
-            {ccr.map((stop, index) => {
-              return (
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    borderWidth: 1,
-                    borderBottomWidth: 1,
-                    borderTopWidth: index === 0 ? 1 : 0,
-                  }}
-                  key={index}
-                >
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <View style={{ flex: 0.3 }}>
+            <ScrollView>
+              {ccr.map((stop, index) => {
+                return (
                   <View
                     style={{
-                      flex: 0.4,
+                      flex: 1,
+                      borderWidth: 1,
+                      borderBottomWidth: 1,
+                      borderTopWidth: index === 0 ? 1 : 0,
+                      height: 100,
                       backgroundColor: "#D4D4D4",
                       minWidth: 100,
                       width: 100,
                       maxWidth: 100,
                     }}
+                    key={index}
                   >
-                    <Text style={{ padding: 4, borderBottomWidth: 0 }}>
+                    <Text style={{ padding: 2, borderBottomWidth: 0 }}>
                       {stop.stopName}
                     </Text>
                   </View>
-                  <View style={{ flex: 0.6, flexDirection: "row" }}>
-                    {/* <ScrollView horizontal={true}> */}
-                    {stop.times.map((time, i) => (
-                      <View
-                        key={i}
-                        style={{ justifyContent: "center", borderLeftWidth: 1 }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            padding: 5,
-                            color: "black",
-                            fontWeight: "400",
-                            marginRight: 10,
-                          }}
-                        >
-                          {time}
-                        </Text>
-                      </View>
-                    ))}
-                    {/* </ScrollView> */}
-                  </View>
-                </View>
-              );
-            })}
-          </ScrollView>
-        </ScrollView>
-        {/* {ccr.map((stop, index) => {
-          return (
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                borderWidth: 1,
-                borderBottomWidth: index === stop.length ? 1 : 0,
-              }}
-              key={index}
-            >
-              <View style={{ flex: 0.4, backgroundColor: "#D4D4D4" }}>
-                <Text style={{ padding: 2, borderBottomWidth: 0 }}>
-                  {stop.stopName}
-                </Text>
-              </View>
-              <View style={{ flex: 0.6 }}>
-                <ScrollView horizontal={true}>
-                  {stop.times.map((time, i) => (
+                );
+              })}
+            </ScrollView>
+          </View>
+          <View style={{ flex: 0.7 }}>
+            <ScrollView horizontal={true}>
+              <ScrollView>
+                {ccr.map((stop, index) => {
+                  return (
                     <View
-                      key={i}
-                      style={{ justifyContent: "center", borderLeftWidth: 1 }}
+                      style={{
+                        flex: 1,
+                        borderWidth: 1,
+                        borderBottomWidth: 1,
+                        borderTopWidth: index === 0 ? 1 : 0,
+                        height: 100,
+                        minWidth: 100,
+                      }}
+                      key={index}
                     >
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          padding: 5,
-                          color: "black",
-                          fontWeight: "400",
-                          marginRight: 10,
-                        }}
-                      >
-                        {time}
-                      </Text>
+                      <View style={{ flexDirection: "row" }}>
+                        {stop.times.map((time, i) => (
+                          <View
+                            key={i}
+                            style={{
+                              flex: 1,
+                              justifyContent: "center",
+                              borderLeftWidth: i === 0 ? 0 : 1,
+                              height: 100,
+                              width:100,
+                              maxWidth:100,
+                              minWidth:100,
+                              alignItems:'center'
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                padding: 5,
+                                color: "black",
+                                fontWeight: "400",
+                                marginRight: 10,
+                                textAlign:'justify'
+                              }}
+                            >
+                              {time}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
                     </View>
-                  ))}
-                </ScrollView>
-              </View>
-            </View>
-          );
-        })} */}
+                  );
+                })}
+              </ScrollView>
+            </ScrollView>
+          </View>
+        </View>
+        
         {/* <Accordion
           data={ccr.map((stop, index) => ({
             title: stop.stopName,
@@ -674,60 +642,84 @@ const TimetableScreen = () => {
             fontSize: 12,
           }}
         />
-        <ScrollView horizontal={true}>
-          <ScrollView>
-            {ccli.map((stop, index) => {
-              return (
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    borderWidth: 1,
-                    borderBottomWidth: 1,
-                    borderTopWidth: index === 0 ? 1 : 0,
-                  }}
-                  key={index}
-                >
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <View style={{ flex: 0.3 }}>
+            <ScrollView>
+              {ccli.map((stop, index) => {
+                return (
                   <View
                     style={{
-                      flex: 0.4,
+                      flex: 1,
+                      borderWidth: 1,
+                      borderBottomWidth: 1,
+                      borderTopWidth: index === 0 ? 1 : 0,
+                      height: 100,
                       backgroundColor: "#D4D4D4",
                       minWidth: 100,
                       width: 100,
                       maxWidth: 100,
                     }}
+                    key={index}
                   >
                     <Text style={{ padding: 2, borderBottomWidth: 0 }}>
                       {stop.stop_name}
                     </Text>
                   </View>
-                  <View style={{ flex: 0.6, flexDirection: "row" }}>
-                    {/* <ScrollView horizontal={true}> */}
-                    {stop.times.map((time, i) => (
-                      <View
-                        key={i}
-                        style={{ justifyContent: "center", borderLeftWidth: 1 }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            padding: 5,
-                            color: "black",
-                            fontWeight: "400",
-                            marginRight: 10,
-                          }}
-                        >
-                          {time}
-                        </Text>
+                );
+              })}
+            </ScrollView>
+          </View>
+          <View style={{ flex: 0.7 }}>
+            <ScrollView horizontal={true}>
+              <ScrollView>
+                {ccli.map((stop, index) => {
+                  return (
+                    <View
+                      style={{
+                        flex: 1,
+                        borderWidth: 1,
+                        borderBottomWidth: 1,
+                        borderTopWidth: index === 0 ? 1 : 0,
+                        height: 100,
+                      }}
+                      key={index}
+                    >
+                      <View style={{ flexDirection: "row" }}>
+                        {stop.times.map((time, i) => (
+                          <View
+                            key={i}
+                            style={{
+                              flex: 1,
+                              justifyContent: "center",
+                              borderLeftWidth: i === 0 ? 0 : 1,
+                              height: 100,
+                              width:100,
+                              maxWidth:100,
+                              minWidth:100,
+                              alignItems:'center'
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                padding: 5,
+                                color: "black",
+                                fontWeight: "400",
+                                marginRight: 10,
+                              }}
+                            >
+                              {time}
+                            </Text>
+                          </View>
+                        ))}
                       </View>
-                    ))}
-                    {/* </ScrollView> */}
-                  </View>
-                </View>
-              );
-            })}
-          </ScrollView>
-        </ScrollView>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </ScrollView>
+          </View>
+        </View>
         {/* <Accordion
           data={ccli.map((stop, index) => ({
             title: stop.stop_name,
