@@ -26,6 +26,8 @@ import * as Linking from "expo-linking";
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
+const cellWidth = 100;
+const cellHeight = 100;
 
 const AccordionItem = ({ children, title, expanded, onHeaderPress }) => {
   const body = <View style={styles.accordBody}>{children}</View>;
@@ -351,9 +353,8 @@ const TimetableScreen = () => {
           onPress={handleButtonPress}
           marginB={20}
         />
-        <Text style={{ color: "red", padding: 4 }}>Tap on stop name</Text>
         <View style={{ flex: 1, flexDirection: "row" }}>
-          <View style={{ flex: 0.3 }}>
+          <View style={{ flex: 0.5 }}>
             <ScrollView>
               {litf.map((stop, index) => {
                 return (
@@ -363,15 +364,13 @@ const TimetableScreen = () => {
                       borderWidth: 1,
                       borderBottomWidth: 1,
                       borderTopWidth: index === 0 ? 1 : 0,
-                      height: 100,
                       backgroundColor: "#D4D4D4",
-                      minWidth: 100,
-                      width: 100,
-                      maxWidth: 100,
+                      height: cellHeight,
+                      width: "100%",
                     }}
                     key={index}
                   >
-                    <TouchableOpacity onPress={() => alert(stop.stop_name)}>
+                    <TouchableOpacity>
                       <Text style={{ padding: 2, borderBottomWidth: 0 }}>
                         {stop.stop_name}
                       </Text>
@@ -381,7 +380,7 @@ const TimetableScreen = () => {
               })}
             </ScrollView>
           </View>
-          <View style={{ flex: 0.7 }}>
+          <View style={{ flex: 0.5 }}>
             <ScrollView horizontal={true}>
               <ScrollView>
                 {litf.map((stop, index) => {
@@ -389,10 +388,9 @@ const TimetableScreen = () => {
                     <View
                       style={{
                         flex: 1,
-                        borderWidth: 1,
                         borderBottomWidth: 1,
                         borderTopWidth: index === 0 ? 1 : 0,
-                        height: 100,
+                        height: cellHeight,
                       }}
                       key={index}
                     >
@@ -404,10 +402,10 @@ const TimetableScreen = () => {
                               flex: 1,
                               justifyContent: "center",
                               borderLeftWidth: i === 0 ? 0 : 1,
-                              height: 100,
-                              width: 100,
-                              maxWidth: 100,
-                              minWidth: 100,
+                              height: cellHeight,
+                              minWidth: cellWidth,
+                              width: cellWidth,
+                              maxWidth: cellWidth,
                               alignItems: "center",
                             }}
                           >
@@ -485,9 +483,8 @@ const TimetableScreen = () => {
             </TouchableOpacity>
           ))}
         </View>
-        <Text style={{ color: "red", padding: 4 }}>Tap on stop name</Text>
-        <View style={{ flex: 1, flexDirection: "row" }}>
-          <View style={{ flex: 0.3 }}>
+        <View style={{ flex: 1, flexDirection: "row" ,marginTop:2}}>
+          <View style={{ flex: 0.5 }}>
             <ScrollView>
               {ccr.map((stop, index) => {
                 return (
@@ -497,15 +494,13 @@ const TimetableScreen = () => {
                       borderWidth: 1,
                       borderBottomWidth: 1,
                       borderTopWidth: index === 0 ? 1 : 0,
-                      height: 100,
+                      height: cellHeight,
                       backgroundColor: "#D4D4D4",
-                      minWidth: 100,
-                      width: 100,
-                      maxWidth: 100,
+                      width: "100%",
                     }}
                     key={index}
                   >
-                    <TouchableOpacity onPress={() => alert(stop.stopName)}>
+                    <TouchableOpacity>
                       <Text style={{ padding: 2, borderBottomWidth: 0 }}>
                         {stop.stopName}
                       </Text>
@@ -515,7 +510,7 @@ const TimetableScreen = () => {
               })}
             </ScrollView>
           </View>
-          <View style={{ flex: 0.7 }}>
+          <View style={{ flex: 0.5 }}>
             <ScrollView horizontal={true}>
               <ScrollView>
                 {ccr.map((stop, index) => {
@@ -523,11 +518,11 @@ const TimetableScreen = () => {
                     <View
                       style={{
                         flex: 1,
-                        borderWidth: 1,
                         borderBottomWidth: 1,
                         borderTopWidth: index === 0 ? 1 : 0,
-                        height: 100,
-                        minWidth: 100,
+                        height: cellHeight,
+                        
+                        minWidth: cellWidth,
                       }}
                       key={index}
                     >
@@ -539,10 +534,10 @@ const TimetableScreen = () => {
                               flex: 1,
                               justifyContent: "center",
                               borderLeftWidth: i === 0 ? 0 : 1,
-                              height: 100,
-                              width: 100,
-                              maxWidth: 100,
-                              minWidth: 100,
+                              height: cellHeight,
+                              minWidth: cellWidth,
+                              width: cellWidth,
+                              maxWidth: cellWidth,
                               alignItems: "center",
                             }}
                           >
@@ -568,24 +563,6 @@ const TimetableScreen = () => {
             </ScrollView>
           </View>
         </View>
-
-        {/* <Accordion
-          data={ccr.map((stop, index) => ({
-            title: stop.stopName,
-            content: (
-              <View
-                style={{ flexDirection: "row", flexWrap: "wrap" }}
-                key={index}
-              >
-                {stop.times.map((time, i) => (
-                  <Text style={styles.timeStyle} key={i}>
-                    {time}
-                  </Text>
-                ))}
-              </View>
-            ),
-          }))}
-        /> */}
       </View>
     );
   }
@@ -618,9 +595,8 @@ const TimetableScreen = () => {
             fontSize: 12,
           }}
         />
-        <Text style={{ color: "red", padding: 4 }}>Tap on stop name</Text>
         <View style={{ flex: 1, flexDirection: "row" }}>
-          <View style={{ flex: 0.3 }}>
+          <View style={{ flex: 0.5 }}>
             <ScrollView>
               {ccli.map((stop, index) => {
                 return (
@@ -630,15 +606,13 @@ const TimetableScreen = () => {
                       borderWidth: 1,
                       borderBottomWidth: 1,
                       borderTopWidth: index === 0 ? 1 : 0,
-                      height: 100,
                       backgroundColor: "#D4D4D4",
-                      minWidth: 100,
-                      width: 100,
-                      maxWidth: 100,
+                      height: cellHeight,
+                      width: "100%",
                     }}
                     key={index}
                   >
-                    <TouchableOpacity onPress={() => alert(stop.stop_name)}>
+                    <TouchableOpacity>
                       <Text style={{ padding: 2, borderBottomWidth: 0 }}>
                         {stop.stop_name}
                       </Text>
@@ -648,7 +622,7 @@ const TimetableScreen = () => {
               })}
             </ScrollView>
           </View>
-          <View style={{ flex: 0.7 }}>
+          <View style={{ flex: 0.5 }}>
             <ScrollView horizontal={true}>
               <ScrollView>
                 {ccli.map((stop, index) => {
@@ -656,10 +630,10 @@ const TimetableScreen = () => {
                     <View
                       style={{
                         flex: 1,
-                        borderWidth: 1,
+                        
                         borderBottomWidth: 1,
                         borderTopWidth: index === 0 ? 1 : 0,
-                        height: 100,
+                        height: cellHeight,
                       }}
                       key={index}
                     >
@@ -671,10 +645,10 @@ const TimetableScreen = () => {
                               flex: 1,
                               justifyContent: "center",
                               borderLeftWidth: i === 0 ? 0 : 1,
-                              height: 100,
-                              width: 100,
-                              maxWidth: 100,
-                              minWidth: 100,
+                              height: cellHeight,
+                              minWidth: cellWidth,
+                              width: cellWidth,
+                              maxWidth: cellWidth,
                               alignItems: "center",
                             }}
                           >
@@ -699,32 +673,6 @@ const TimetableScreen = () => {
             </ScrollView>
           </View>
         </View>
-        {/* <Accordion
-          data={ccli.map((stop, index) => ({
-            title: stop.stop_name,
-            content: (
-              <View
-                style={{ flexDirection: "row", flexWrap: "wrap" }}
-                key={index}
-              >
-                {stop.times.map((time, i) => (
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      paddingTop: 5,
-                      color: "black",
-                      fontWeight: "400",
-                      marginRight: 10,
-                    }}
-                    key={i}
-                  >
-                    {time}
-                  </Text>
-                ))}
-              </View>
-            ),
-          }))}
-        /> */}
       </View>
     );
   }
