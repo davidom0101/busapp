@@ -86,7 +86,19 @@ const NotificationsScreen = () => {
           item.date.nanoseconds !== undefined
       );
 
-      // Sort the remaining objects based on the date field
+      const now = Math.floor(Date.now() / 1000);
+
+      const sevenDaysAgo = now - 1 * 24 * 60 * 60;
+      notiData = notiData.filter((item) => {
+        if (
+          !item.date ||
+          item.date.seconds === undefined ||
+          item.date.nanoseconds === undefined
+        ) {
+          return false;
+        }
+        return item.date.seconds >= sevenDaysAgo;
+      });
       notiData.sort((a, b) => {
         const dateA = a.date.seconds * 1e9 + a.date.nanoseconds;
         const dateB = b.date.seconds * 1e9 + b.date.nanoseconds;
