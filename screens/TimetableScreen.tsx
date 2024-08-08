@@ -351,6 +351,7 @@ const TimetableScreen = () => {
           onPress={handleButtonPress}
           marginB={20}
         />
+        <Text style={{ color: "red", padding: 4 }}>Tap on stop name</Text>
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ flex: 0.3 }}>
             <ScrollView>
@@ -370,9 +371,11 @@ const TimetableScreen = () => {
                     }}
                     key={index}
                   >
-                    <Text style={{ padding: 2, borderBottomWidth: 0 }}>
-                      {stop.stop_name}
-                    </Text>
+                    <TouchableOpacity onPress={() => alert(stop.stop_name)}>
+                      <Text style={{ padding: 2, borderBottomWidth: 0 }}>
+                        {stop.stop_name}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 );
               })}
@@ -402,10 +405,10 @@ const TimetableScreen = () => {
                               justifyContent: "center",
                               borderLeftWidth: i === 0 ? 0 : 1,
                               height: 100,
-                              width:100,
-                              maxWidth:100,
-                              minWidth:100,
-                              alignItems:'center'
+                              width: 100,
+                              maxWidth: 100,
+                              minWidth: 100,
+                              alignItems: "center",
                             }}
                           >
                             <Text
@@ -429,36 +432,6 @@ const TimetableScreen = () => {
             </ScrollView>
           </View>
         </View>
-
-        {/* <Accordion
-          data={litf.map((stop, index) => ({
-            title: stop.stop_name,
-            content: (
-              <View
-                style={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                }}
-                key={index}
-              >
-                {stop.times.map((time, i) => (
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      paddingTop: 5,
-                      color: "black",
-                      fontWeight: "400",
-                      marginRight: 10,
-                    }}
-                    key={i}
-                  >
-                    {time}
-                  </Text>
-                ))}
-              </View>
-            ),
-          }))}
-        /> */}
       </View>
     );
   }
@@ -512,6 +485,7 @@ const TimetableScreen = () => {
             </TouchableOpacity>
           ))}
         </View>
+        <Text style={{ color: "red", padding: 4 }}>Tap on stop name</Text>
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ flex: 0.3 }}>
             <ScrollView>
@@ -531,9 +505,11 @@ const TimetableScreen = () => {
                     }}
                     key={index}
                   >
-                    <Text style={{ padding: 2, borderBottomWidth: 0 }}>
-                      {stop.stopName}
-                    </Text>
+                    <TouchableOpacity onPress={() => alert(stop.stopName)}>
+                      <Text style={{ padding: 2, borderBottomWidth: 0 }}>
+                        {stop.stopName}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 );
               })}
@@ -564,10 +540,10 @@ const TimetableScreen = () => {
                               justifyContent: "center",
                               borderLeftWidth: i === 0 ? 0 : 1,
                               height: 100,
-                              width:100,
-                              maxWidth:100,
-                              minWidth:100,
-                              alignItems:'center'
+                              width: 100,
+                              maxWidth: 100,
+                              minWidth: 100,
+                              alignItems: "center",
                             }}
                           >
                             <Text
@@ -577,7 +553,7 @@ const TimetableScreen = () => {
                                 color: "black",
                                 fontWeight: "400",
                                 marginRight: 10,
-                                textAlign:'justify'
+                                textAlign: "justify",
                               }}
                             >
                               {time}
@@ -592,7 +568,7 @@ const TimetableScreen = () => {
             </ScrollView>
           </View>
         </View>
-        
+
         {/* <Accordion
           data={ccr.map((stop, index) => ({
             title: stop.stopName,
@@ -642,6 +618,7 @@ const TimetableScreen = () => {
             fontSize: 12,
           }}
         />
+        <Text style={{ color: "red", padding: 4 }}>Tap on stop name</Text>
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ flex: 0.3 }}>
             <ScrollView>
@@ -661,9 +638,11 @@ const TimetableScreen = () => {
                     }}
                     key={index}
                   >
-                    <Text style={{ padding: 2, borderBottomWidth: 0 }}>
-                      {stop.stop_name}
-                    </Text>
+                    <TouchableOpacity onPress={() => alert(stop.stop_name)}>
+                      <Text style={{ padding: 2, borderBottomWidth: 0 }}>
+                        {stop.stop_name}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 );
               })}
@@ -693,10 +672,10 @@ const TimetableScreen = () => {
                               justifyContent: "center",
                               borderLeftWidth: i === 0 ? 0 : 1,
                               height: 100,
-                              width:100,
-                              maxWidth:100,
-                              minWidth:100,
-                              alignItems:'center'
+                              width: 100,
+                              maxWidth: 100,
+                              minWidth: 100,
+                              alignItems: "center",
                             }}
                           >
                             <Text
