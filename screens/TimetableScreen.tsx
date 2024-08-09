@@ -22,12 +22,13 @@ import { db } from "../firebase/firebase";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Linking from "expo-linking";
+import * as Sharing from "expo-sharing";
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-const cellWidth = 100;
-const cellHeight = 100;
+const cellWidth = 70;
+const cellHeight = 110;
 
 const AccordionItem = ({ children, title, expanded, onHeaderPress }) => {
   const body = <View style={styles.accordBody}>{children}</View>;
@@ -275,7 +276,7 @@ const TimetableScreen = () => {
           });
         } else {
           // For iOS
-          Linking.openURL(uri);
+          Sharing.shareAsync(uri, { dialogTitle: "Open with or Share" });
         }
         setLoading(false);
       }
@@ -339,7 +340,7 @@ const TimetableScreen = () => {
             }}
           />
           <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text style={styles.headings}>Route 200</Text>
+            <Text style={styles.headings}>Route 210</Text>
             <Text style={styles.headings}>Little Island To Hollyhill</Text>
           </View>
           <View style={styles.dayContainer}>
@@ -354,7 +355,7 @@ const TimetableScreen = () => {
           marginB={20}
         />
         <View style={{ flex: 1, flexDirection: "row" }}>
-          <View style={{ flex: 0.5 }}>
+          <View style={{ flex: 0.4 }}>
             <ScrollView>
               {litf.map((stop, index) => {
                 return (
@@ -367,6 +368,8 @@ const TimetableScreen = () => {
                       backgroundColor: "#D4D4D4",
                       height: cellHeight,
                       width: "100%",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                     key={index}
                   >
@@ -380,7 +383,7 @@ const TimetableScreen = () => {
               })}
             </ScrollView>
           </View>
-          <View style={{ flex: 0.5 }}>
+          <View style={{ flex: 0.6 }}>
             <ScrollView horizontal={true}>
               <ScrollView>
                 {litf.map((stop, index) => {
@@ -391,6 +394,7 @@ const TimetableScreen = () => {
                         borderBottomWidth: 1,
                         borderTopWidth: index === 0 ? 1 : 0,
                         height: cellHeight,
+                        borderRightWidth: 1,
                       }}
                       key={index}
                     >
@@ -446,7 +450,7 @@ const TimetableScreen = () => {
             }}
           />
           <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text style={styles.headings}>Route 210</Text>
+            <Text style={styles.headings}>Route 200</Text>
             <Text style={styles.headings}>Cobh - Cork Route 200</Text>
           </View>
           <View style={styles.dayContainer}>
@@ -483,8 +487,8 @@ const TimetableScreen = () => {
             </TouchableOpacity>
           ))}
         </View>
-        <View style={{ flex: 1, flexDirection: "row" ,marginTop:2}}>
-          <View style={{ flex: 0.5 }}>
+        <View style={{ flex: 1, flexDirection: "row", marginTop: 2 }}>
+          <View style={{ flex: 0.4 }}>
             <ScrollView>
               {ccr.map((stop, index) => {
                 return (
@@ -497,6 +501,8 @@ const TimetableScreen = () => {
                       height: cellHeight,
                       backgroundColor: "#D4D4D4",
                       width: "100%",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                     key={index}
                   >
@@ -510,7 +516,7 @@ const TimetableScreen = () => {
               })}
             </ScrollView>
           </View>
-          <View style={{ flex: 0.5 }}>
+          <View style={{ flex: 0.6 }}>
             <ScrollView horizontal={true}>
               <ScrollView>
                 {ccr.map((stop, index) => {
@@ -521,7 +527,7 @@ const TimetableScreen = () => {
                         borderBottomWidth: 1,
                         borderTopWidth: index === 0 ? 1 : 0,
                         height: cellHeight,
-                        
+                        borderRightWidth: 1,
                         minWidth: cellWidth,
                       }}
                       key={index}
@@ -535,9 +541,9 @@ const TimetableScreen = () => {
                               justifyContent: "center",
                               borderLeftWidth: i === 0 ? 0 : 1,
                               height: cellHeight,
-                              minWidth: cellWidth,
-                              width: cellWidth,
-                              maxWidth: cellWidth,
+                              minWidth: time.length > 5 ? 200 : cellWidth,
+                              width: time.length > 5 ? 200 : cellWidth,
+                              maxWidth: time.length > 5 ? 200 : cellWidth,
                               alignItems: "center",
                             }}
                           >
@@ -596,7 +602,7 @@ const TimetableScreen = () => {
           }}
         />
         <View style={{ flex: 1, flexDirection: "row" }}>
-          <View style={{ flex: 0.5 }}>
+          <View style={{ flex: 0.4 }}>
             <ScrollView>
               {ccli.map((stop, index) => {
                 return (
@@ -609,6 +615,8 @@ const TimetableScreen = () => {
                       backgroundColor: "#D4D4D4",
                       height: cellHeight,
                       width: "100%",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                     key={index}
                   >
@@ -622,7 +630,7 @@ const TimetableScreen = () => {
               })}
             </ScrollView>
           </View>
-          <View style={{ flex: 0.5 }}>
+          <View style={{ flex: 0.6 }}>
             <ScrollView horizontal={true}>
               <ScrollView>
                 {ccli.map((stop, index) => {
@@ -630,9 +638,10 @@ const TimetableScreen = () => {
                     <View
                       style={{
                         flex: 1,
-                        
+
                         borderBottomWidth: 1,
                         borderTopWidth: index === 0 ? 1 : 0,
+                        borderRightWidth: 1,
                         height: cellHeight,
                       }}
                       key={index}
@@ -722,7 +731,7 @@ const TimetableScreen = () => {
           {loading ? (
             <Text style={styles.textStyles}>{downloadProgress}%</Text>
           ) : (
-            <Text style={styles.textStyles}>Download Time table PDF</Text>
+            <Text style={styles.textStyles}>Download Timetable PDF</Text>
           )}
         </TouchableOpacity>
       </View>
