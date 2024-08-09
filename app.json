@@ -15,8 +15,8 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
-      "buildNumber": "1.0.0",
-      "bundleIdentifier": "com.barryscoaches.app"
+      "bundleIdentifier": "com.barryscoaches.app",
+      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
