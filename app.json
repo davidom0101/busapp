@@ -24,7 +24,7 @@
         "backgroundColor": "#ff5757"
       },
       "package": "com.barryscoaches.app",
-      "versionCode": 1,
+      "versionCode": 2,
       "googleServicesFile": "./google-services.json"
     },
     "web": {
