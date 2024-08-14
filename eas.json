@@ -10,7 +10,7 @@
       "channel": "preview"
     },
     "production": {
-      "channel": "production",
+      "channel": "production"
     }
   }
 }
