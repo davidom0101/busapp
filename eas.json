@@ -11,14 +11,6 @@
     },
     "production": {
       "channel": "production",
-      "env": {
-        "EXPO_PUBLIC_API_KEY": "AIzaSyDxkyuX1XJA3SEA5I4IP98AsfGRDR3V5ak",
-        "EXPO_PUBLIC_AUTH_DOMAIN": "corkconnectapp.firebaseapp.com",
-        "EXPO_PUBLIC_PROJECT_ID": "corkconnectapp",
-        "EXPO_PUBLIC_STORAGE_BUCKET": "corkconnectapp.appspot.com",
-        "EXPO_PUBLIC_MESSAGING_SENDER_ID": "163841309727",
-        "EXPO_PUBLIC_APP_ID": "1:163841309727:web:548b69a8935d0a5dbb292a"
-      }
     }
   }
 }
