@@ -6,6 +6,7 @@ credentials
 credentials.json
 .env
 .expo
+android
 # Ignore all files in the .history directory
 .history/
 # Optionally, ignore any other specific patterns or files
