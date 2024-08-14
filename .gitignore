@@ -11,3 +11,4 @@ credentials.json
 # Optionally, ignore any other specific patterns or files
 package-lock.json
 yarn.lock
+eas.json
