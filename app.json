@@ -3,9 +3,8 @@
     "name": "Cork Cobh Connect",
     "slug": "barryscoaches",
     "scheme": "bcs",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -16,32 +15,34 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.barryscoaches.app",
-      "buildNumber": "2"
+      "buildNumber": "3",
+      "icon": "./assets/ios.png"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/android.png",
         "backgroundColor": "#ff5757"
       },
       "package": "com.barryscoaches.app",
-      "versionCode": 2,
-      "googleServicesFile": "./google-services.json"
+      "versionCode": 3,
+      "googleServicesFile": "./google-services.json",
+      "icon": "./assets//android.png"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "eas": {
-        "projectId": "27a7b130-a0ae-4a45-a4cf-5ab6d7c90751"
-      }
-    },
-    "owner": "davidomalley",
     "plugins": ["expo-font"],
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/27a7b130-a0ae-4a45-a4cf-5ab6d7c90751"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "27a7b130-a0ae-4a45-a4cf-5ab6d7c90751"
+      }
+    },
+    "owner": "davidomalley"
   }
 }

@@ -71,11 +71,7 @@ export default function App() {
   if (!loaded) {
     return null;
   }
-  return (
-    <View style={{ flex: 1 }}>
-      <MainNavigator />
-    </View>
-  );
+  return <MainNavigator />;
 }
 
 async function registerForPushNotificationsAsync() {

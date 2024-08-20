@@ -196,7 +196,7 @@ const NotificationsScreen = () => {
         <TouchableOpacity
           style={styles.backBtn}
           onPress={() => {
-            navigation.goBack();
+            navigation.navigate("Home");
           }}
         >
           <BackIcon />
