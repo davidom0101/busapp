@@ -1,15 +1,11 @@
 import { create } from "zustand";
 
-interface GlobalStateStore {
-  unSeenNotifications: number;
+interface GlobalStateStore { 
   pushNotificationToken: string | null;
-  setPushNotifcationToken: (x: string) => void;
-  setunSeenNotifications: (x: number) => void;
+  setPushNotifcationToken: (x: string) => void; 
 }
 
-export const useGlobalStateStore = create<GlobalStateStore>((set) => ({
-  unSeenNotifications: 0,
+export const useGlobalStateStore = create<GlobalStateStore>((set) => ({ 
   pushNotificationToken: null,
-  setPushNotifcationToken: (x) => set({ pushNotificationToken: x }),
-  setunSeenNotifications: (x) => set({ unSeenNotifications: x }),
+  setPushNotifcationToken: (x) => set({ pushNotificationToken: x }), 
 }));

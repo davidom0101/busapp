@@ -12,16 +12,13 @@ import CoachHireScreen from "../screens/CoachHireScreen";
 import TimetableScreen from "../screens/TimetableScreen";
 import TrackMyBusScreen from "../screens/TrackMyBusScreen";
 import NotificationsScreen from "../screens/Notifications";
-import * as Notifications from "expo-notifications";
-import { getUnseenCount } from "../components/helperFunctions";
+import * as Notifications from "expo-notifications"; 
+import * as Linking from "expo-linking";
+import UpdateTimeTables from "../screens/uploadTimeTables";
 
-import { useGlobalStateStore } from "../components/globalStateStore";
-import * as Linking from "expo-linking"; 
-
-const prefix = Linking.createURL("/");
 const Drawer = createDrawerNavigator();
 
-const HomeSideDrawer = (navigation) => {
+const HomeSideDrawer = () => {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <HomeDrawerContent {...props} />}
@@ -40,13 +37,6 @@ const HomeSideDrawer = (navigation) => {
 const Stack = createStackNavigator();
 
 export const MainNavigator = () => {
-  const setunSeenNotifications = useGlobalStateStore(
-    (s) => s.setunSeenNotifications
-  );
-  const onReceiveNotification = async () => {
-    const unseenCount = await getUnseenCount();
-    setunSeenNotifications(unseenCount);
-  };
   return (
     <NavigationContainer
       linking={{
@@ -99,6 +89,11 @@ export const MainNavigator = () => {
         <Stack.Screen name="Timetable" component={TimetableScreen} />
         <Stack.Screen name="TrackMyBus" component={TrackMyBusScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
+        <Stack.Screen
+          name="UpdateTimeTables"
+          component={UpdateTimeTables}
+          options={{ headerShown: true, title: "Manage Timetable" }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

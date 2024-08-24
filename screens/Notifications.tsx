@@ -15,11 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useGlobalStateStore } from "../components/globalStateStore";
 import { notificationStatusKey } from "../components/constants";
-import {
-  getUnseenCount,
-  markNotificationAsSeenAsyncStore,
-  storeData,
-} from "../components/helperFunctions";
+import { storeData } from "../components/helperFunctions";
 import { useNavigation } from "@react-navigation/native";
 import {
   collection,
@@ -40,14 +36,10 @@ if (
 const NotificationsScreen = () => {
   const navigation = useNavigation();
   const [notifications, setNotifications] = useState([]);
-  const [activeFilter, setActiveFilter] = useState("all");
   const pushNotificationToken = useGlobalStateStore(
     (s) => s.pushNotificationToken
   );
   const [notificationsStatus, setNotificationsStatus] = useState<boolean>();
-  const setunSeenNotifications = useGlobalStateStore(
-    (s) => s.setunSeenNotifications
-  );
   const checkNotificationsStatus = async () => {
     try {
       const res = await AsyncStorage.getItem(notificationStatusKey);
@@ -105,14 +97,9 @@ const NotificationsScreen = () => {
         return dateB - dateA;
       });
       setNotifications(notiData);
-      onReceiveNotification();
     } catch (error) {
       console.error("Error fetching notifications:", error);
     }
-  };
-  const onReceiveNotification = async () => {
-    const unseenCount = await getUnseenCount();
-    setunSeenNotifications(unseenCount);
   };
   const handleToggleNotifications = async (status) => {
     try {
@@ -151,9 +138,6 @@ const NotificationsScreen = () => {
     return (
       <TouchableOpacity
         onPress={() => {
-          markNotificationAsSeenAsyncStore(item.id).then(() =>
-            fetchNotifications()
-          );
           Alert.alert(item.title, item.body);
         }}
       >
@@ -169,27 +153,6 @@ const NotificationsScreen = () => {
       </TouchableOpacity>
     );
   };
-  const filteredNotifications = () => {
-    let filteredNotifications;
-    switch (activeFilter) {
-      case "seen":
-        filteredNotifications = notifications.filter(
-          (notification) => notification.status === "seen"
-        );
-        break;
-      case "unseen":
-        filteredNotifications = notifications.filter(
-          (notification) => notification.status === "unseen"
-        );
-        break;
-      case "all":
-      default:
-        filteredNotifications = notifications;
-        break;
-    }
-    return filteredNotifications;
-  };
-  const finalNotifications = filteredNotifications();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -203,46 +166,7 @@ const NotificationsScreen = () => {
         </TouchableOpacity>
         <Text style={styles.titleText}>Notifications</Text>
       </View>
-      {/* <View style={{ flexDirection: "row" }}>
-        {["all", "unseen", "seen", "clear"].map((x, index) => {
-          return (
-            <TouchableOpacity
-              key={index}
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                margin: 10,
-                padding: 4,
-                borderWidth: 1,
-                borderRadius: 30,
-                paddingHorizontal: 12,
-                alignItems: "center",
-                backgroundColor: activeFilter === x ? "red" : "#fff",
-              }}
-              onPress={() => {
-                if (x === "clear") {
-                  clearAllNotifications().then(() => {
-                    onReceiveNotification();
-                    setNotifications([]);
-                  });
-                } else {
-                  setActiveFilter(x);
-                }
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "ABeeZeeRegular",
-                  color: activeFilter === x ? "#fff" : "#000",
-                }}
-              >
-                {x}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View> */}
-      <FlatList data={finalNotifications} renderItem={renderItem} />
+      <FlatList data={notifications} renderItem={renderItem} />
       <TouchableOpacity
         style={{
           flexDirection: "row",

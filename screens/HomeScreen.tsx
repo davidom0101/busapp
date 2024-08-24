@@ -5,7 +5,6 @@ import {
   View,
   Image,
   TouchableOpacity,
-  ScrollView,
   Dimensions,
 } from "react-native";
 import Constants from "expo-constants";
@@ -13,18 +12,13 @@ import {
   MenuIcon,
   TicketsIcon,
   TrackIcon,
-  ProfileIcon,
   FAQIcon,
-  MyTicketsIcon,
   TimetablesIcon,
   BusIcon,
   ContactIcon,
-} from "../components/Icons"; 
+} from "../components/Icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-
-import { useGlobalStateStore } from "../components/globalStateStore"; 
-
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const itemWidth = windowWidth / 2 - 20;
@@ -32,8 +26,8 @@ const itemHeight =
   (windowHeight - windowWidth * 0.4 - Constants.statusBarHeight) / 3 - 40;
 
 const HomeScreen = ({ navigation }) => {
-  const [notice, setNotice] = useState(""); 
-  
+  const [notice, setNotice] = useState("");
+
   useEffect(() => {
     fetch("https://burkesbus.ie/wp-json/wp/v2/app_notice/2242")
       .then((response) => response.json())
@@ -77,22 +71,6 @@ const HomeScreen = ({ navigation }) => {
           }}
         >
           <Ionicons name="notifications" size={30} color="black" />
-          {/* <Text
-            style={{
-              fontFamily: "ABeeZeeRegular",
-              position: "absolute",
-              top: -10,
-              right: -4,
-              backgroundColor: "red",
-              color: "#fff",
-              paddingHorizontal:5,
-              paddingVertical:2,
-              borderRadius:30,
-              fontSize:8
-            }}
-          >
-            {unSeenNotifications}
-          </Text> */}
         </TouchableOpacity>
       </View>
 

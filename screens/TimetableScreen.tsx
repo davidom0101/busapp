@@ -112,18 +112,19 @@ const TimetableScreen = () => {
     getAllDataOfCCRFromCollection();
     getAllDataCCLIFromCollection();
   }, []);
-
+  console.log("litf stops :", litf, timetables);
   const getAllDataFromCollection = async () => {
     try {
       setLoadLitf(true);
       const collectionRef = collection(db, "LITF");
       const querySnapshot = await getDocs(collectionRef);
-
+      console.log("LITF :", collectionRef);
       const allData = [];
       querySnapshot.forEach((doc) => {
         if (doc.exists()) {
           const { stops, direction } = doc.data();
           allData.push({ id: doc.id, direction, stops });
+          console.log("LITF  doc :", doc.data());
         } else {
           console.log("No such document with ID: ", doc.id);
         }
@@ -131,6 +132,12 @@ const TimetableScreen = () => {
       const filteredData = allData.filter((item) => {
         return item.direction == activeButton;
       });
+      console.log(
+        "filtered data :",
+        filteredData,
+        allData[0].direction,
+        activeButton
+      );
       const stops = filteredData.length > 0 ? filteredData[0].stops : [];
       setLitf(stops);
       setTimetables(allData);
@@ -212,10 +219,10 @@ const TimetableScreen = () => {
       // Determine the PDF URL based on selectedOption
       if (selectedOption === "Little Island") {
         pdfUrl =
-          "https://drive.google.com/uc?export=download&id=1zYSMcWpBhVacdXP_3uD93s2c-uB4Vbko";
+          "https://drive.google.com/uc?export=download&id=1AClWlHgAVZQpLcv6fCcG6yx5rSRSXJtX";
       } else if (selectedOption === "Cobh - Cork Route 200") {
         pdfUrl =
-          "https://drive.google.com/uc?export=download&id=1AClWlHgAVZQpLcv6fCcG6yx5rSRSXJtX";
+          "https://drive.google.com/uc?export=download&id=1zYSMcWpBhVacdXP_3uD93s2c-uB4Vbko";
       } else if (selectedOption === "Cobh - Carrigtwohill - Little Island") {
         pdfUrl =
           "https://drive.google.com/uc?export=download&id=12psmZW_yf8LZdUBUmrqF70Q8mxqO37dt";
@@ -225,6 +232,7 @@ const TimetableScreen = () => {
         setLoading(false);
         return;
       }
+      console.log("selectd option :", selectedOption, pdfUrl);
       const cache = await AsyncStorage.getItem(selectedOption);
       if (cache) {
         if (Platform.OS === "android") {
@@ -304,11 +312,20 @@ const TimetableScreen = () => {
     const filteredData2 = filteredData.filter((item) => {
       return item.direction == buttonLabel;
     });
+    console.log(
+      "CCR :",
+      buttonLabel,
+      activeDay,
+      timetables2[0].daysRunning,
+      filteredData,
+      filteredData2
+    );
     setCcr(filteredData2);
   }
 
   function handleButtonPress3(buttonLabel) {
     setActiveButton3(buttonLabel);
+    console.log("button label :", buttonLabel);
     const filteredData = timetables3.filter((item) => {
       return item.direction == buttonLabel;
     });
@@ -740,6 +757,24 @@ const TimetableScreen = () => {
           activeOpacity={0.8}
           style={[
             styles.buttonStyle,
+            selectedOption === "Cobh - Cork Route 200" && styles.selectedButton,
+          ]}
+          onPress={() => handleOptionPress("Cobh - Cork Route 200")}
+        >
+          <Text
+            style={[
+              styles.buttonText,
+              selectedOption === "Cobh - Cork Route 200" && styles.selectedText,
+              { fontSize: 8 },
+            ]}
+          >
+            Route 200 Cobh - Cork
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={[
+            styles.buttonStyle,
             selectedOption === "Little Island" && styles.selectedButton,
           ]}
           onPress={() => handleOptionPress("Little Island")}
@@ -750,26 +785,10 @@ const TimetableScreen = () => {
               selectedOption === "Little Island" && styles.selectedText,
             ]}
           >
-            Little Island To Hollyhill
+            Route 210 Hollyhill - Cork City - Little Island
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={[
-            styles.buttonStyle,
-            selectedOption === "Cobh - Cork Route 200" && styles.selectedButton,
-          ]}
-          onPress={() => handleOptionPress("Cobh - Cork Route 200")}
-        >
-          <Text
-            style={[
-              styles.buttonText,
-              selectedOption === "Cobh - Cork Route 200" && styles.selectedText,
-            ]}
-          >
-            Cobh - Cork Route 200
-          </Text>
-        </TouchableOpacity>
+
         <TouchableOpacity
           activeOpacity={0.8}
           style={[
@@ -788,7 +807,7 @@ const TimetableScreen = () => {
                 styles.selectedText,
             ]}
           >
-            Cobh - Carrigtwohill - Little Island
+            Route 211 Cobh - Carrigtwohill - Little Island
           </Text>
         </TouchableOpacity>
       </View>
@@ -1005,7 +1024,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     width: 106,
-    height: 44,
+    height: 50,
     borderRadius: 7,
     backgroundColor: "#ffffff",
     justifyContent: "center",
@@ -1013,7 +1032,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "black",
-    fontSize: 11.26,
+    fontSize: 8,
     textAlign: "center",
   },
   selectedButton: {
