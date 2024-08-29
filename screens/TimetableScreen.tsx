@@ -13,7 +13,7 @@ import {
 import Constants from "expo-constants";
 import { BackIcon } from "../components/Icons";
 import * as IntentLauncher from "expo-intent-launcher";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import constants from "../constants/constants";
 import { collection, getDocs } from "firebase/firestore";
@@ -105,6 +105,9 @@ const TimetableScreen = () => {
   const [loadCcr, setLoadCcr] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Little Island");
+  const [selectedOptionName, setSelectedOptionName] = useState(
+    "Route 210 Hollyhill - Cork City - Little"
+  );
   const [downloadProgress, setDownloadProgress] = useState(0);
 
   useEffect(() => {
@@ -112,19 +115,16 @@ const TimetableScreen = () => {
     getAllDataOfCCRFromCollection();
     getAllDataCCLIFromCollection();
   }, []);
-  console.log("litf stops :", litf, timetables);
   const getAllDataFromCollection = async () => {
     try {
       setLoadLitf(true);
       const collectionRef = collection(db, "LITF");
       const querySnapshot = await getDocs(collectionRef);
-      console.log("LITF :", collectionRef);
       const allData = [];
       querySnapshot.forEach((doc) => {
         if (doc.exists()) {
           const { stops, direction } = doc.data();
           allData.push({ id: doc.id, direction, stops });
-          console.log("LITF  doc :", doc.data());
         } else {
           console.log("No such document with ID: ", doc.id);
         }
@@ -132,12 +132,7 @@ const TimetableScreen = () => {
       const filteredData = allData.filter((item) => {
         return item.direction == activeButton;
       });
-      console.log(
-        "filtered data :",
-        filteredData,
-        allData[0].direction,
-        activeButton
-      );
+
       const stops = filteredData.length > 0 ? filteredData[0].stops : [];
       setLitf(stops);
       setTimetables(allData);
@@ -232,7 +227,6 @@ const TimetableScreen = () => {
         setLoading(false);
         return;
       }
-      console.log("selectd option :", selectedOption, pdfUrl);
       const cache = await AsyncStorage.getItem(selectedOption);
       if (cache) {
         if (Platform.OS === "android") {
@@ -245,7 +239,14 @@ const TimetableScreen = () => {
           });
         } else {
           // For iOS
-          Linking.openURL(cache);
+          try {
+            await Sharing.shareAsync(cache, {
+              dialogTitle: "Open with or Share",
+            });
+          } catch (error) {
+            alert(JSON.stringify(error));
+            console.log("error while opening :", error);
+          }
         }
         setLoading(false);
       } else {
@@ -284,7 +285,14 @@ const TimetableScreen = () => {
           });
         } else {
           // For iOS
-          Sharing.shareAsync(uri, { dialogTitle: "Open with or Share" });
+          try {
+            await Sharing.shareAsync(uri, {
+              dialogTitle: "Open with or Share",
+            });
+          } catch (error) {
+            alert(JSON.stringify(error));
+            console.log("error while opening :", error);
+          }
         }
         setLoading(false);
       }
@@ -312,20 +320,12 @@ const TimetableScreen = () => {
     const filteredData2 = filteredData.filter((item) => {
       return item.direction == buttonLabel;
     });
-    console.log(
-      "CCR :",
-      buttonLabel,
-      activeDay,
-      timetables2[0].daysRunning,
-      filteredData,
-      filteredData2
-    );
+
     setCcr(filteredData2);
   }
 
   function handleButtonPress3(buttonLabel) {
     setActiveButton3(buttonLabel);
-    console.log("button label :", buttonLabel);
     const filteredData = timetables3.filter((item) => {
       return item.direction == buttonLabel;
     });
@@ -470,8 +470,8 @@ const TimetableScreen = () => {
             <Text style={styles.headings}>Route 200</Text>
             <Text style={styles.headings}>Cobh - Cork Route 200</Text>
           </View>
-          <View style={styles.dayContainer}>
-            <Text style={styles.dateStyle}>{activeDay}</Text>
+          <View style={[styles.dayContainer, { width: 110 }]}>
+            <Text style={styles.dateStyle}>Mon-Sun</Text>
           </View>
         </View>
         <CustomButton
@@ -503,6 +503,18 @@ const TimetableScreen = () => {
               </Text>
             </TouchableOpacity>
           ))}
+        </View>
+        <View style={{ flexDirection: "row", padding: 6 }}>
+          <View
+            style={{
+              backgroundColor: "red",
+              width: 20,
+              height: 20,
+              marginRight: 6,
+              borderWidth: 0.5,
+            }}
+          />
+          <Text>Thursday and Friday only Nitlink</Text>
         </View>
         <View style={{ flex: 1, flexDirection: "row", marginTop: 2 }}>
           <View style={{ flex: 0.4 }}>
@@ -549,24 +561,30 @@ const TimetableScreen = () => {
                       }}
                       key={index}
                     >
-                      <View style={{ flexDirection: "row" }}>
+                      <View style={{ flexDirection: "row", paddingRight: 20 }}>
                         {stop.times.map((time, i) => (
                           <View
                             key={i}
                             style={{
                               flex: 1,
+                              backgroundColor:
+                                i < stop.times.length - 2
+                                  ? "transparent"
+                                  : "red",
                               justifyContent: "center",
-                              borderLeftWidth: i === 0 ? 0 : 1,
+
                               height: cellHeight,
                               minWidth: time.length > 5 ? 200 : cellWidth,
                               width: time.length > 5 ? 200 : cellWidth,
                               maxWidth: time.length > 5 ? 200 : cellWidth,
                               alignItems: "center",
+                              borderWidth: 0.5,
+                              borderBottomWidth: 0,
                             }}
                           >
                             <Text
                               style={{
-                                fontSize: 16,
+                                fontSize: 14,
                                 padding: 5,
                                 color: "black",
                                 fontWeight: "400",
@@ -730,11 +748,16 @@ const TimetableScreen = () => {
         </TouchableOpacity>
         <Text style={styles.titleText}>Timetables</Text>
       </View>
+
       <View style={styles.contentBox}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.insideContentBox}
         >
+          <View style={{ flexDirection: "row", padding: 6,alignItems:'center' , }}>
+            <MaterialIcons name="directions-bus" size={24} color="red" />
+            <Text>{selectedOptionName}</Text>
+          </View>
           {selectedOption === "Little Island" && renderLittleIsland()}
           {selectedOption === "Cobh - Cork Route 200" && renderCobhCorkRoute()}
           {selectedOption === "Cobh - Carrigtwohill - Little Island" &&
@@ -752,6 +775,7 @@ const TimetableScreen = () => {
           )}
         </TouchableOpacity>
       </View>
+
       <View style={styles.optionBar}>
         <TouchableOpacity
           activeOpacity={0.8}
@@ -759,16 +783,20 @@ const TimetableScreen = () => {
             styles.buttonStyle,
             selectedOption === "Cobh - Cork Route 200" && styles.selectedButton,
           ]}
-          onPress={() => handleOptionPress("Cobh - Cork Route 200")}
+          onPress={() => {
+            handleOptionPress("Cobh - Cork Route 200");
+            setSelectedOptionName("Route 200 Cobh - Cork");
+           
+          }}
         >
           <Text
             style={[
               styles.buttonText,
               selectedOption === "Cobh - Cork Route 200" && styles.selectedText,
-              { fontSize: 8 },
+              { fontSize: 12 },
             ]}
           >
-            Route 200 Cobh - Cork
+            Route 200
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -777,18 +805,23 @@ const TimetableScreen = () => {
             styles.buttonStyle,
             selectedOption === "Little Island" && styles.selectedButton,
           ]}
-          onPress={() => handleOptionPress("Little Island")}
+          onPress={() => {
+            handleOptionPress("Little Island");
+            setSelectedOptionName(
+              "Route 210 Hollyhill - Cork City - Little Islands"
+            );
+          }}
         >
           <Text
             style={[
               styles.buttonText,
               selectedOption === "Little Island" && styles.selectedText,
+              { fontSize: 12 },
             ]}
           >
-            Route 210 Hollyhill - Cork City - Little Island
+            Route 210
           </Text>
         </TouchableOpacity>
-
         <TouchableOpacity
           activeOpacity={0.8}
           style={[
@@ -796,18 +829,22 @@ const TimetableScreen = () => {
             selectedOption === "Cobh - Carrigtwohill - Little Island" &&
               styles.selectedButton,
           ]}
-          onPress={() =>
-            handleOptionPress("Cobh - Carrigtwohill - Little Island")
-          }
+          onPress={() => {
+            handleOptionPress("Cobh - Carrigtwohill - Little Island");
+            setSelectedOptionName(
+              "Route 211 Cobh - Carrigtwogill - Little Islands"
+            );
+          }}
         >
           <Text
             style={[
               styles.buttonText,
               selectedOption === "Cobh - Carrigtwohill - Little Island" &&
                 styles.selectedText,
+              { fontSize: 12 },
             ]}
           >
-            Route 211 Cobh - Carrigtwohill - Little Island
+            Route 211
           </Text>
         </TouchableOpacity>
       </View>
@@ -900,6 +937,7 @@ const styles = StyleSheet.create({
     marginTop: 55,
     borderRadius: 9,
     marginBottom: 10,
+   
   },
   topPart: {
     flexDirection: "row",
