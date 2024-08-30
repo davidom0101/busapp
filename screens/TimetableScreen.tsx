@@ -13,7 +13,7 @@ import {
 import Constants from "expo-constants";
 import { BackIcon } from "../components/Icons";
 import * as IntentLauncher from "expo-intent-launcher";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import CustomButton from "../components/CustomButton";
 import constants from "../constants/constants";
 import { collection, getDocs } from "firebase/firestore";
@@ -21,7 +21,6 @@ import * as FileSystem from "expo-file-system";
 import { db } from "../firebase/firebase";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Linking from "expo-linking";
 import * as Sharing from "expo-sharing";
 
 if (Platform.OS === "android") {
@@ -105,16 +104,34 @@ const TimetableScreen = () => {
   const [loadCcr, setLoadCcr] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Little Island");
-  const [selectedOptionName, setSelectedOptionName] = useState(
-    "Route 210 Hollyhill - Cork City - Little"
-  );
   const [downloadProgress, setDownloadProgress] = useState(0);
+  const [pdfs, setPDFs] = useState([]);
 
   useEffect(() => {
     getAllDataFromCollection();
     getAllDataOfCCRFromCollection();
     getAllDataCCLIFromCollection();
+    getPDFs();
   }, []);
+  const getPDFs = async () => {
+    try {
+      const collectionRef = collection(db, "timetablePDF");
+      const querySnapshot = await getDocs(collectionRef);
+      const allData = [];
+      querySnapshot.forEach((doc) => {
+        if (doc.exists()) {
+          const { url, name } = doc.data();
+          allData.push({ id: doc.id, name, url });
+        } else {
+          console.log("No such document with ID: ", doc.id);
+        }
+        setPDFs(allData);
+      });
+    } catch (error) {
+      console.log("error :", error);
+    }
+  };
+  console.log("PDFS :", pdfs);
   const getAllDataFromCollection = async () => {
     try {
       setLoadLitf(true);
@@ -209,29 +226,15 @@ const TimetableScreen = () => {
   const generatePDF = async () => {
     setLoading(true);
     try {
-      let pdfUrl = "";
-
-      // Determine the PDF URL based on selectedOption
-      if (selectedOption === "Little Island") {
-        pdfUrl =
-          "https://drive.google.com/uc?export=download&id=1AClWlHgAVZQpLcv6fCcG6yx5rSRSXJtX";
-      } else if (selectedOption === "Cobh - Cork Route 200") {
-        pdfUrl =
-          "https://drive.google.com/uc?export=download&id=1zYSMcWpBhVacdXP_3uD93s2c-uB4Vbko";
-      } else if (selectedOption === "Cobh - Carrigtwohill - Little Island") {
-        pdfUrl =
-          "https://drive.google.com/uc?export=download&id=12psmZW_yf8LZdUBUmrqF70Q8mxqO37dt";
-      } else {
-        // Handle the case where selectedOption doesn't match any known options
-        console.error("Invalid selectedOption:", selectedOption);
-        setLoading(false);
-        return;
-      }
+      let pdfUrl = pdfs.find((x) => x.id === selectedOption);
       const cache = await AsyncStorage.getItem(selectedOption);
-      if (cache) {
+      const parsedCache = JSON.parse(cache);
+      if (parsedCache?.url === pdfUrl.url) {
         if (Platform.OS === "android") {
           // For Android
-          const contentUri = await FileSystem.getContentUriAsync(cache);
+          const contentUri = await FileSystem.getContentUriAsync(
+            parsedCache.uri
+          );
           IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
             data: contentUri,
             flags: 1,
@@ -240,7 +243,7 @@ const TimetableScreen = () => {
         } else {
           // For iOS
           try {
-            await Sharing.shareAsync(cache, {
+            await Sharing.shareAsync(parsedCache.uri, {
               dialogTitle: "Open with or Share",
             });
           } catch (error) {
@@ -259,7 +262,7 @@ const TimetableScreen = () => {
           });
         }
         const downloadResumable = FileSystem.createDownloadResumable(
-          pdfUrl,
+          pdfUrl.url,
           customFolderUri + selectedOption + ".pdf",
           {},
           (progress) => {
@@ -274,7 +277,10 @@ const TimetableScreen = () => {
           }
         );
         const { uri } = await downloadResumable.downloadAsync();
-        await AsyncStorage.setItem(selectedOption, uri);
+        await AsyncStorage.setItem(
+          selectedOption,
+          JSON.stringify({ uri, url: pdfUrl?.url })
+        );
         if (Platform.OS === "android") {
           // For Android
           const contentUri = await FileSystem.getContentUriAsync(uri);
@@ -787,7 +793,6 @@ const TimetableScreen = () => {
           ]}
           onPress={() => {
             handleOptionPress("Cobh - Cork Route 200");
-            setSelectedOptionName("Route 200 Cobh - Cork");
           }}
         >
           <Text
@@ -808,9 +813,6 @@ const TimetableScreen = () => {
           ]}
           onPress={() => {
             handleOptionPress("Little Island");
-            setSelectedOptionName(
-              "Route 210 Hollyhill - Cork City - Little Islands"
-            );
           }}
         >
           <Text
@@ -832,9 +834,6 @@ const TimetableScreen = () => {
           ]}
           onPress={() => {
             handleOptionPress("Cobh - Carrigtwohill - Little Island");
-            setSelectedOptionName(
-              "Route 211 Cobh - Carrigtwogill - Little Islands"
-            );
           }}
         >
           <Text
