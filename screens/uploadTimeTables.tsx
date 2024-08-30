@@ -115,11 +115,14 @@ export default function UpdateTimeTables() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <ScrollView style={{ height: 100 }} horizontal={true}>
+        <ScrollView
+          style={{ height: 100, paddingHorizontal: 20,marginHorizontal:20 ,paddingEnd:30}}
+          horizontal={true}
+        >
           {updated.map((x, index) => {
             return (
-              <TouchableOpacity key={index} style={styles.button}>
-                <Text style={styles.text}>{x}</Text>
+              <TouchableOpacity key={index} style={[ {padding:6,borderWidth:1,margin:20,borderRadius:12,justifyContent:'center'}]}>
+                <Text style={{textAlign:'center'}}  >{x}</Text>
               </TouchableOpacity>
             );
           })}
@@ -3184,7 +3187,6 @@ const Cobh2CorkSun: TimetabelCCLI = {
       stop_name: "Carrignafoy Avenue, O'Neills Place",
       times: [
         "07:45",
-        "08:30",
         "9:00",
         "10:00",
         "11:00",
@@ -3550,7 +3552,6 @@ const Cobh2CorkSun: TimetabelCCLI = {
         "15:10",
 
         "16:10",
-        "16:39",
         "17:24",
 
         "18:24",

@@ -61,7 +61,7 @@ export default function App() {
       setPushNotifcationToken(token as string);
       const res = await AsyncStorage.getItem(notificationStatusKey);
       if (res === "no") {
-      } else {
+      } else if (token) {
         console.log("notification allowed :", res);
         addTokentoFirebase(token as string);
       }

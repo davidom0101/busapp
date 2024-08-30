@@ -514,7 +514,13 @@ const TimetableScreen = () => {
               borderWidth: 0.5,
             }}
           />
-          <Text>Thursday and Friday only Nitlink</Text>
+          <Text>
+            {activeDay === "Sat"
+              ? "Saturday Nitelink"
+              : activeDay === "Mon-Fri"
+              ? "Thursday and Friday only Nitlink"
+              : "BH Sunday Only - Nitelink"}
+          </Text>
         </View>
         <View style={{ flex: 1, flexDirection: "row", marginTop: 2 }}>
           <View style={{ flex: 0.4 }}>
@@ -754,10 +760,6 @@ const TimetableScreen = () => {
           showsVerticalScrollIndicator={false}
           style={styles.insideContentBox}
         >
-          <View style={{ flexDirection: "row", padding: 6,alignItems:'center' , }}>
-            <MaterialIcons name="directions-bus" size={24} color="red" />
-            <Text>{selectedOptionName}</Text>
-          </View>
           {selectedOption === "Little Island" && renderLittleIsland()}
           {selectedOption === "Cobh - Cork Route 200" && renderCobhCorkRoute()}
           {selectedOption === "Cobh - Carrigtwohill - Little Island" &&
@@ -786,7 +788,6 @@ const TimetableScreen = () => {
           onPress={() => {
             handleOptionPress("Cobh - Cork Route 200");
             setSelectedOptionName("Route 200 Cobh - Cork");
-           
           }}
         >
           <Text
@@ -796,7 +797,7 @@ const TimetableScreen = () => {
               { fontSize: 12 },
             ]}
           >
-            Route 200
+            Route 200 Cobh - Cork
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -816,10 +817,10 @@ const TimetableScreen = () => {
             style={[
               styles.buttonText,
               selectedOption === "Little Island" && styles.selectedText,
-              { fontSize: 12 },
+              { fontSize: 10 },
             ]}
           >
-            Route 210
+            Route 210 Hollyhill - Cork City - Little Islands
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -841,10 +842,10 @@ const TimetableScreen = () => {
               styles.buttonText,
               selectedOption === "Cobh - Carrigtwohill - Little Island" &&
                 styles.selectedText,
-              { fontSize: 12 },
+              { fontSize: 11 },
             ]}
           >
-            Route 211
+            Route 211 Cobh - Carrigtwohill - Little Island
           </Text>
         </TouchableOpacity>
       </View>
@@ -937,7 +938,6 @@ const styles = StyleSheet.create({
     marginTop: 55,
     borderRadius: 9,
     marginBottom: 10,
-   
   },
   topPart: {
     flexDirection: "row",
