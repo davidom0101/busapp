@@ -3,7 +3,7 @@
     "name": "Cork Cobh Connect",
     "slug": "barryscoaches",
     "scheme": "bcs",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {
@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.barryscoaches.app",
-      "buildNumber": "4",
+      "buildNumber": "5",
       "icon": "./assets/ios.png"
     },
     "android": {
@@ -24,7 +24,7 @@
         "backgroundColor": "#ff5757"
       },
       "package": "com.barryscoaches.app",
-      "versionCode": 4,
+      "versionCode": 5,
       "googleServicesFile": "./google-services.json",
       "icon": "./assets//android.png"
     },
