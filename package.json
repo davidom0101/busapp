@@ -37,8 +37,7 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
     "react-native-webview": "13.8.6",
-    "zustand": "^4.5.4",
-    "expo-dev-client": "~4.0.25"
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
