@@ -222,37 +222,9 @@ const TimetableScreen = () => {
   const handleOptionPress = (option) => {
     setSelectedOption(option);
   };
-
-  const generatePDF = async () => {
-    setLoading(true);
+  const downloadAndShowPDF = async () => {
     try {
       let pdfUrl = pdfs.find((x) => x.id === selectedOption);
-      // const cache = await AsyncStorage.getItem(selectedOption);
-      // const parsedCache = JSON.parse(cache);
-      // if (parsedCache?.url === pdfUrl.url) {
-      //   if (Platform.OS === "android") {
-      //     // For Android
-      //     const contentUri = await FileSystem.getContentUriAsync(
-      //       parsedCache.uri
-      //     );
-      //     IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
-      //       data: contentUri,
-      //       flags: 1,
-      //       type: "application/pdf",
-      //     });
-      //   } else {
-      //     // For iOS
-      //     try {
-      //       await Sharing.shareAsync(parsedCache.uri, {
-      //         dialogTitle: "Open with or Share",
-      //       });
-      //     } catch (error) {
-      //       alert(JSON.stringify(error));
-      //       console.log("error while opening :", error);
-      //     }
-      //   }
-      //   setLoading(false);
-      // } else {
       const customFolderUri =
         FileSystem.documentDirectory + "Cobh_TimeTables" + "/";
       const folderInfo = await FileSystem.getInfoAsync(customFolderUri);
@@ -277,7 +249,7 @@ const TimetableScreen = () => {
       );
       const { uri } = await downloadResumable.downloadAsync();
       await AsyncStorage.setItem(
-        selectedOption,
+        `${selectedOption}New`,
         JSON.stringify({ uri, url: pdfUrl?.url })
       );
       if (Platform.OS === "android") {
@@ -300,7 +272,48 @@ const TimetableScreen = () => {
         }
       }
       setLoading(false);
-      // }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error generating PDF:", error);
+    }
+  };
+  const generatePDF = async () => {
+    setLoading(true);
+    try {
+      let pdfUrl = pdfs.find((x) => x.id === selectedOption);
+      const cache = await AsyncStorage.getItem(`${selectedOption}New`);
+
+      if (cache) {
+        const parsedCache = JSON.parse(cache);
+        if (parsedCache?.url === pdfUrl.url) {
+          if (Platform.OS === "android") {
+            // For Android
+            const contentUri = await FileSystem.getContentUriAsync(
+              parsedCache.uri
+            );
+            IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
+              data: contentUri,
+              flags: 1,
+              type: "application/pdf",
+            });
+          } else {
+            // For iOS
+            try {
+              await Sharing.shareAsync(parsedCache.uri, {
+                dialogTitle: "Open with or Share",
+              });
+            } catch (error) {
+              alert(JSON.stringify(error));
+              console.log("error while opening :", error);
+            }
+          }
+          setLoading(false);
+        } else {
+          downloadAndShowPDF();
+        }
+      } else {
+        downloadAndShowPDF();
+      }
     } catch (error) {
       setLoading(false);
       console.error("Error generating PDF:", error);
