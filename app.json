@@ -16,7 +16,8 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.barryscoaches.app",
       "buildNumber": "5",
-      "icon": "./assets/ios.png"
+      "icon": "./assets/ios.png",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,7 +32,18 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-font"],
+    "plugins": [
+      "@react-native-firebase/app",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      "expo-font"
+    ],
     "runtimeVersion": {
       "policy": "appVersion"
     },
