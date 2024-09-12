@@ -3,7 +3,7 @@
     "name": "Cork Cobh Connect",
     "slug": "barryscoaches",
     "scheme": "bcs",
-    "version": "1.0.5",
+    "version": "1.0.7",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {
@@ -25,7 +25,7 @@
         "backgroundColor": "#ff5757"
       },
       "package": "com.barryscoaches.app",
-      "versionCode": 6,
+      "versionCode": 7,
       "googleServicesFile": "./google-services.json",
       "icon": "./assets//android.png"
     },

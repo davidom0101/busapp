@@ -28,61 +28,7 @@ if (Platform.OS === "android") {
 }
 const cellWidth = 70;
 const cellHeight = 110;
-
-const AccordionItem = ({ children, title, expanded, onHeaderPress }) => {
-  const body = <View style={styles.accordBody}>{children}</View>;
-
-  return (
-    <View style={styles.accordContainer}>
-      <TouchableOpacity
-        style={[
-          styles.accordHeader,
-          {
-            borderBottomLeftRadius: expanded ? 0 : 9,
-            borderBottomRightRadius: expanded ? 0 : 9,
-          },
-        ]}
-        onPress={onHeaderPress}
-      >
-        <View style={{ flex: 1 }}>
-          <Text style={styles.accordTitle}>{title}</Text>
-        </View>
-
-        {expanded ? (
-          <AntDesign name="caretup" size={16} color="white" />
-        ) : (
-          <AntDesign name="caretdown" size={16} color="white" />
-        )}
-      </TouchableOpacity>
-      {expanded && body}
-    </View>
-  );
-};
-
-const Accordion = ({ data }) => {
-  const [expandedIndex, setExpandedIndex] = useState(null);
-
-  function handleHeaderPress(index) {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpandedIndex(expandedIndex === index ? null : index);
-  }
-
-  return (
-    <>
-      {data.map((item, index) => (
-        <AccordionItem
-          key={index}
-          title={item.title}
-          expanded={expandedIndex === index}
-          onHeaderPress={() => handleHeaderPress(index)}
-        >
-          {item.content}
-        </AccordionItem>
-      ))}
-    </>
-  );
-};
-
+const cacheTime = 10 * 60; //10 min
 const TimetableScreen = () => {
   const [activeDay, setActiveDay] = useState("Mon-Fri");
   const navigation = useNavigation();
@@ -115,6 +61,14 @@ const TimetableScreen = () => {
   }, []);
   const getPDFs = async () => {
     try {
+      const cacheData = await AsyncStorage.getItem("timetablePDF");
+      const cacheTime = await AsyncStorage.getItem("timetablePDFExpireCache");
+      if (cacheData && isCacheValid(cacheTime)) {
+        const parsedData = JSON.parse(cacheData);
+        setPDFs(parsedData);
+        console.log("using cache data");
+        return;
+      }
       const collectionRef = collection(db, "timetablePDF");
       const querySnapshot = await getDocs(collectionRef);
       const allData = [];
@@ -125,16 +79,35 @@ const TimetableScreen = () => {
         } else {
           console.log("No such document with ID: ", doc.id);
         }
-        setPDFs(allData);
       });
+      setPDFs(allData);
+      await AsyncStorage.setItem("timetablePDF", JSON.stringify(allData));
+      const currentData = new Date();
+      await AsyncStorage.setItem("timetablePDFExpireCache", currentData.toString());
+      console.log("using fresh data");
     } catch (error) {
       console.log("error :", error);
     }
-  };
-  console.log("PDFS :", pdfs);
+  }; 
   const getAllDataFromCollection = async () => {
     try {
       setLoadLitf(true);
+      const cacheData = await AsyncStorage.getItem("LITF");
+      const cacheTime = await AsyncStorage.getItem("LITFExpireCache");
+      if (cacheData && isCacheValid(cacheTime)) {
+        const parsedData = JSON.parse(cacheData);
+        const filteredData = parsedData.filter((item) => {
+          return item.direction == activeButton;
+        });
+
+        const stops = filteredData.length > 0 ? filteredData[0].stops : [];
+        setLitf(stops);
+        setTimetables(parsedData);
+        setLoadLitf(false);
+        console.log("using cache data");
+        return;
+      }
+
       const collectionRef = collection(db, "LITF");
       const querySnapshot = await getDocs(collectionRef);
       const allData = [];
@@ -154,6 +127,10 @@ const TimetableScreen = () => {
       setLitf(stops);
       setTimetables(allData);
       setLoadLitf(false);
+      await AsyncStorage.setItem("LITF", JSON.stringify(allData));
+      const currentData = new Date();
+      await AsyncStorage.setItem("LITFExpireCache", currentData.toString());
+      console.log("using fresh data");
     } catch (error) {
       console.error("Error getting documents from collection:", error);
       throw error;
@@ -163,6 +140,20 @@ const TimetableScreen = () => {
   const getAllDataCCLIFromCollection = async () => {
     try {
       setLoadCcli(true);
+      const cacheData = await AsyncStorage.getItem("CCLI");
+      const cacheTime = await AsyncStorage.getItem("CCLIExpireCache");
+      if (cacheData && isCacheValid(cacheTime)) {
+        const parsedData = JSON.parse(cacheData);
+        const filteredData = parsedData.filter((item) => {
+          return item.direction == activeButton3;
+        });
+        const stops = filteredData.length > 0 ? filteredData[0].stops : [];
+        setCcli(stops);
+        setTimetables3(parsedData);
+        setLoadCcli(false);
+        console.log("using cache data");
+        return;
+      }
       const collectionRef = collection(db, "CCLI");
       const querySnapshot = await getDocs(collectionRef);
 
@@ -182,6 +173,10 @@ const TimetableScreen = () => {
       setCcli(stops);
       setTimetables3(allData);
       setLoadCcli(false);
+      await AsyncStorage.setItem("CCLI", JSON.stringify(allData));
+      const currentData = new Date();
+      await AsyncStorage.setItem("CCLIExpireCache", currentData.toString());
+      console.log("using fresh data");
     } catch (error) {
       console.error("Error getting documents from collection:", error);
       throw error;
@@ -191,6 +186,22 @@ const TimetableScreen = () => {
   const getAllDataOfCCRFromCollection = async () => {
     try {
       setLoadCcr(true);
+      const cacheData = await AsyncStorage.getItem("CCR");
+      const cacheTime = await AsyncStorage.getItem("CCRExpireCache");
+      if (cacheData && isCacheValid(cacheTime)) {
+        const parsedData = JSON.parse(cacheData);
+        const filteredDataByDaysRunning = parsedData.filter((item) => {
+          return item.daysRunning == activeDay;
+        });
+        const filteredData = filteredDataByDaysRunning.filter((item) => {
+          return item.direction === activeButton2;
+        });
+        setCcr(filteredData);
+        setTimetables2(parsedData);
+        setLoadCcr(false);
+        console.log("using cache data");
+        return;
+      }
       const collectionRef = collection(db, "CCR");
       const querySnapshot = await getDocs(collectionRef);
 
@@ -213,12 +224,28 @@ const TimetableScreen = () => {
       setCcr(filteredData);
       setTimetables2(allData);
       setLoadCcr(false);
+      console.log("using fresh data");
+      await AsyncStorage.setItem("CCR", JSON.stringify(allData));
+      const currentData = new Date();
+      await AsyncStorage.setItem("CCRExpireCache", currentData.toString());
     } catch (error) {
       console.error("Error getting documents from collection:", error);
       throw error;
     }
   };
+  const isCacheValid = (lastFetchTime) => {
+    const now = new Date();
+    const lastFetchDate = new Date(lastFetchTime);
 
+    // Get the difference in milliseconds
+    const timeDifference = now - lastFetchDate;
+
+    // Convert milliseconds to hours
+    const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+    // Check if the difference is less than 24 hours
+    return hoursDifference < 24;
+  };
   const handleOptionPress = (option) => {
     setSelectedOption(option);
   };
@@ -765,7 +792,7 @@ const TimetableScreen = () => {
         <TouchableOpacity
           style={styles.backBtn}
           onPress={() => {
-            navigation.pop();
+            navigation.navigate('Home')
           }}
         >
           <BackIcon />
